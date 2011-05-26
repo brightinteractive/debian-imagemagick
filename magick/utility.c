@@ -1019,12 +1019,12 @@ MagickExport MagickBooleanType GetExecutionPath(char *path,const size_t extent)
         size_t
           extent;
 
-        extent=strlen(cwd)+strlen(program_name)+1;
+        extent=strlen(directory)+1+strlen(program_name)+1;
         program_name=AcquireQuantumMemory(extent,sizeof(*program_name));
         if (program_name == (char *) NULL)
           program_name=program_invocation_name;
         else
-          count=FormatMagickString(program_name,extent,"%s/%s",cwd,
+          count=FormatMagickString(program_name,extent,"%s/%s",directory,
             program_invocation_name);
       }
     if (count != -1)
