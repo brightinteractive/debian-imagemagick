@@ -1,3 +1,11 @@
+imagemagick (8:6.6.9.7-6) unstable; urgency=high
+
+  * Security bug fix: "Invalid validation DoS
+    CVE-2012-0247/CVE-2012-02478", thanks to Henri Salo (Closes: #659339).
+  * Bumping urgency to high to fix open security issue in testing
+
+ -- Vincent Fourmond <fourmond@debian.org>  Wed, 22 Feb 2012 20:33:56 +0100
+
 imagemagick (8:6.6.9.7-5) unstable; urgency=low
 
   * Replace a overlapped memcopy by a memmove
