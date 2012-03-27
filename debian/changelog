@@ -1,3 +1,11 @@
+imagemagick (8:6.6.9.7-7) unstable; urgency=high
+
+  * Fix "Invalid validation DoS CVE-2012-1185 / CVE-2012-1186" 
+  (Closes: #665007)
+  * Bumping urgency to high to fix open security issue in testing
+
+ -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Tue, 27 Mar 2012 16:47:41 +0200
+
 imagemagick (8:6.6.9.7-6) unstable; urgency=high
 
   * Security bug fix: "Invalid validation DoS
