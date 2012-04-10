@@ -149,6 +149,9 @@ typedef struct _SourceManager
 static MagickBooleanType
   WriteJPEGImage(const ImageInfo *,Image *);
 #endif
+static void 
+  JPEGErrorHandler(j_common_ptr);
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -274,6 +277,8 @@ static MagickBooleanType IsITUFaxImage(const Image *image)
 
 static void JPEGErrorHandler(j_common_ptr jpeg_info)
 {
+  #define JPEGExcessiveWarnings  1000
+
   char
     message[JMSG_LENGTH_MAX];
 
@@ -318,12 +323,13 @@ static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
       /*
         Process warning message.
       */
+      if (jpeg_info->err->num_warnings++ > JPEGExcessiveWarnings)
+        JPEGErrorHandler(jpeg_info);
       (jpeg_info->err->format_message)(jpeg_info,message);
       if ((jpeg_info->err->num_warnings == 0) ||
           (jpeg_info->err->trace_level >= 3))
         ThrowBinaryException(CorruptImageWarning,(char *) message,
           image->filename);
-      jpeg_info->err->num_warnings++;
     }
   else
     if ((image->debug != MagickFalse) &&
