@@ -1307,6 +1307,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         break;
       components=(long) ReadPropertyLong(endian,q+4);
       number_bytes=(size_t) components*tag_bytes[format];
+      if (number_bytes < components)
+        break;  /* prevent overflow */
       if (number_bytes <= 4)
         p=q+8;
       else
@@ -1330,6 +1332,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             buffer[MaxTextExtent],
             *value;
 
+          value=(char *) NULL;
+          *buffer='\0';
           switch (format)
           {
             case EXIF_FMT_BYTE:
