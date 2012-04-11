@@ -1843,8 +1843,9 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
     number_entries=ReadProfileShort(endian,directory);
     for ( ; entry < number_entries; entry++)
     {
+      ssize_t
+        components;
       long
-        components,
         format,
         tag_value;
 
@@ -1863,8 +1864,10 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
       format=(long) ReadProfileShort(endian,q+2);
       if ((format-1) >= EXIF_NUM_FORMATS)
         break;
-      components=(long) ReadProfileLong(endian,q+4);
+      components=(ssize_t) ((int) ReadProfileLong(endian,q+4));
       number_bytes=(size_t) components*format_bytes[format];
+      if (number_bytes < components)
+        break;  /* prevent overflow */
       if (number_bytes <= 4)
         p=q+8;
       else

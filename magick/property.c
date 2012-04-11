@@ -1284,7 +1284,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     number_entries=(size_t) ((int) ReadPropertyShort(endian,directory));
     for ( ; entry < number_entries; entry++)
     {
-      long
+      ssize_t
         components;
 
       register unsigned char
@@ -1305,7 +1305,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       format=(size_t) ((int) ReadPropertyShort(endian,q+2));
       if (format >= (sizeof(tag_bytes)/sizeof(*tag_bytes)))
         break;
-      components=(long) ReadPropertyLong(endian,q+4);
+      components=(ssize_t) ((int) ReadPropertyLong(endian,q+4));
       number_bytes=(size_t) components*tag_bytes[format];
       if (number_bytes < components)
         break;  /* prevent overflow */
