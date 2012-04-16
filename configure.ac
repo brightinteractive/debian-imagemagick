@@ -19,7 +19,7 @@ AC_PREREQ(2.67)
 m4_define([magick_major_version], [6])
 m4_define([magick_minor_version], [7])
 m4_define([magick_micro_version], [6])
-m4_define([magick_patchlevel_version], [6])
+m4_define([magick_patchlevel_version], [5])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
 m4_define([magick_svn_revision], esyscmd([sh -c "svnversion | sed -r 's/([0-9]+).*/\1/'"]))
@@ -192,7 +192,7 @@ eval "eval LIBEXEC_DIR=$libexecdir"
 AC_SUBST(LIBEXEC_DIR)
 eval "eval DATA_DIR=$datadir"
 AC_SUBST(DATA_DIR)
-eval "eval DOC_DIR=$datadir/doc"
+eval "eval DOC_DIR=$docdir"
 AC_SUBST(DOC_DIR)
 eval "eval SYSCONF_DIR=$sysconfdir"
 AC_SUBST(SYSCONF_DIR)
@@ -2973,7 +2973,7 @@ AC_SUBST(FILTER_PATH)
 
 #
 # Path to ImageMagick documentation files
-DOCUMENTATION_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_VERSION}"
+DOCUMENTATION_RELATIVE_PATH=""
 DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}"
 DEFINE_DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}/"
 case "${build_os}" in
@@ -3640,7 +3640,6 @@ if test "$have_lqr"        = 'yes'; then DELEGATES="$DELEGATES lqr"; fi
 if test "$have_lzma"       = 'yes'; then DELEGATES="$DELEGATES lzma"; fi
 if test "$have_ffmpeg"     = 'yes'; then DELEGATES="$DELEGATES mpeg"; fi
 if test "$have_openexr"    = 'yes'; then DELEGATES="$DELEGATES openexr"; fi
-if test "$have_pango"      = 'yes'; then DELEGATES="$DELEGATES pango"; fi
 if test "$have_png"        = 'yes'; then DELEGATES="$DELEGATES png"; fi
 if test "$have_rsvg"       = 'yes'; then DELEGATES="$DELEGATES rsvg"; fi
 if test "$have_tiff"       = 'yes'; then DELEGATES="$DELEGATES tiff"; fi

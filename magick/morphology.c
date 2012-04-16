@@ -282,9 +282,9 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
       if ( args.xi  < 0.0 || args.psi < 0.0 )
         return(DestroyKernelInfo(kernel));
       kernel->x = ((flags & XValue)!=0) ? (ssize_t)args.xi
-                                        : (ssize_t) (kernel->width-1)/2;
+                                               : (ssize_t) (kernel->width-1)/2;
       kernel->y = ((flags & YValue)!=0) ? (ssize_t)args.psi
-                                        : (ssize_t) (kernel->height-1)/2;
+                                               : (ssize_t) (kernel->height-1)/2;
       if ( kernel->x >= (ssize_t) kernel->width ||
            kernel->y >= (ssize_t) kernel->height )
         return(DestroyKernelInfo(kernel));
@@ -326,7 +326,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
       GetMagickToken(p,&p,token);
     if (    LocaleCompare("nan",token) == 0
         || LocaleCompare("-",token) == 0 ) {
-      kernel->values[i] = nan; /* this value is not part of neighbourhood */
+      kernel->values[i] = nan; /* do not include this value in kernel */
     }
     else {
       kernel->values[i] = StringToDouble(token,(char **) NULL);
@@ -2443,17 +2443,17 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  MorphologyApply() applies a morphological method, multiple times using
 %  a list of multiple kernels.
 %
-%  It is basically equivalent to as MorphologyImage() (see below) but
+%  It is basically equivalent to as MorphologyImageChannel() (see below) but
 %  without any user controls.  This allows internel programs to use this
 %  function, to actually perform a specific task without possible interference
 %  by any API user supplied settings.
 %
-%  It is MorphologyImage() task to extract any such user controls, and
+%  It is MorphologyImageChannel() task to extract any such user controls, and
 %  pass them to this function for processing.
 %
 %  More specifically kernels are not normalized/scaled/blended by the
 %  'convolve:scale' Image Artifact (setting), nor is the convolve bias
-%  ('convolve:bias' artifact) looked at, but must be supplied from the
+%  (-bias setting or image->bias) loooked at, but must be supplied from the
 %  function arguments.
 %
 %  The format of the MorphologyApply method is:
@@ -2700,19 +2700,14 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             ** transparent pixels are not part of the results.
             */
             MagickRealType
-              alpha,  /* alpha weighting for colors : alpha  */
-              gamma;  /* divisor, sum of color alpha weighting */
-            size_t
-              count;  /* alpha valus collected, number kernel values */
+              alpha,  /* alpha weighting of colors : kernel*alpha  */
+              gamma;  /* divisor, sum of color weighting values */
 
-            count=0;
             gamma=0.0;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               if ( IsNan(*k) ) continue;
-              alpha=QuantumScale*(QuantumRange-GetPixelOpacity(k_pixels));
-              gamma += alpha; /* normalize alpha weights only */
-              count++;        /* number of alpha values collected */
-              alpha*=(*k);    /* include kernel weighting now */
+              alpha=(*k)*(QuantumScale*(QuantumRange-GetPixelOpacity(k_pixels)));
+              gamma += alpha;
               result.red     += alpha*GetPixelRed(k_pixels);
               result.green   += alpha*GetPixelGreen(k_pixels);
               result.blue    += alpha*GetPixelBlue(k_pixels);
@@ -2724,7 +2719,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
               k_indexes++;
             }
             /* Sync'ed channels, all channels are modified */
-            gamma=(double)count/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+            gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
             SetPixelRed(q,ClampToQuantum(gamma*result.red));
             SetPixelGreen(q,ClampToQuantum(gamma*result.green));
             SetPixelBlue(q,ClampToQuantum(gamma*result.blue));
@@ -2900,7 +2895,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             k_pixels = p;
             k_indexes = p_indexes;
             if ( ((channel & SyncChannels) == 0 ) ||
-                 (image->matte == MagickFalse) )
+                                 (image->matte == MagickFalse) )
               { /* No 'Sync' involved.
                 ** Convolution is simple greyscale channel operation
                 */
@@ -2937,20 +2932,16 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                 ** transparent pixels are not part of the results.
                 */
                 MagickRealType
-                  alpha,  /* alpha weighting for colors : alpha  */
-                  gamma;  /* divisor, sum of color alpha weighting */
-                size_t
-                  count;  /* alpha valus collected, number kernel values */
+                  alpha,  /* alpha weighting of colors : kernel*alpha  */
+                  gamma;  /* divisor, sum of color weighting values */
 
-                count=0;
                 gamma=0.0;
                 for (v=0; v < (ssize_t) kernel->height; v++) {
                   for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                     if ( IsNan(*k) ) continue;
-                    alpha=QuantumScale*(QuantumRange-k_pixels[u].opacity);
-                    gamma += alpha;    /* normalize alpha weights only */
-                    count++;           /* number of alpha values collected */
-                    alpha=alpha*(*k);  /* include kernel weighting now */
+                    alpha=(*k)*(QuantumScale*(QuantumRange-
+                                          k_pixels[u].opacity));
+                    gamma += alpha;
                     result.red     += alpha*k_pixels[u].red;
                     result.green   += alpha*k_pixels[u].green;
                     result.blue    += alpha*k_pixels[u].blue;
@@ -2962,7 +2953,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                   k_indexes += virt_width;
                 }
                 /* Sync'ed channels, all channels are modified */
-                gamma=(double)count/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+                gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
                 SetPixelRed(q,ClampToQuantum(gamma*result.red));
                 SetPixelGreen(q,ClampToQuantum(gamma*result.green));
                 SetPixelBlue(q,ClampToQuantum(gamma*result.blue));
@@ -3457,8 +3448,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               }
             break;
         case VoronoiMorphology:
-            /* Apply Distance to 'Matte' channel, while coping the color
-            ** values of the closest pixel.
+            /* Apply Distance to 'Matte' channel, coping the closest color.
             **
             ** This is experimental, and realy the 'alpha' component should
             ** be completely separate 'masking' channel so that alpha can
@@ -4297,8 +4287,8 @@ MagickExport Image *MorphologyImageChannel(const Image *image,
    */
   { const char
       *artifact;
-    compose = UndefinedCompositeOp;  /* use default for method */
     artifact = GetImageArtifact(image,"morphology:compose");
+    compose = UndefinedCompositeOp;  /* use default for method */
     if ( artifact != (const char *) NULL)
       compose = (CompositeOperator) ParseCommandOption(
                              MagickComposeOptions,MagickFalse,artifact);
