@@ -1,3 +1,21 @@
+imagemagick (8:6.6.0.4-3+squeeze2) stable-security; urgency=high
+
+  * Fix "Invalid validation DoS CVE-2012-1185 / CVE-2012-1186 (incomplete fix)" 
+  (Closes: #665007)
+  * Fix CVE-2012-0259 / CVE-2012-0260 / CVE-2012-1798 / 
+    CVE-2012-1610 (Closes: #667635)
+  - Vulnerability CVE-2012-0259 can cause a DoS in a system
+    via handing JPEG files with invalid EXIF XResolution tag.
+  - Vulnerability CVE-2012-0260 can lead to excessive use of
+    memory in target system, when processing a malicious JPEG file.
+    Excessive use of memory can lead to denial of service.
+  - Vulnerability CVE-2012-1798 can cause program to crash when
+    reading invalid memory, while parsing EXIF IFD in a TIFF file.
+  - Vulnerability CVE-2012-1610 Fix a Potential EXIF Integer Overflow
+
+
+ -- Vincent Fourmond <fourmond@debian.org>  Wed, 18 Apr 2012 23:05:08 +0200
+
 imagemagick (8:6.6.0.4-3+squeeze1) stable-security; urgency=high
 
   * Security bug fix: "Invalid validation DoS

@@ -1,2 +1,5 @@
 601824.patch
 0001-security-ImageMagick-Invalid-Validation-and-Denial-o.patch
+0001-Fix-CVE-2012-1185-CVE-2012-1186-assignment-notificat.patch
+0002-Fix-security-holes-JPEG-EXIF-TIFF.patch
+0003-Fix-security-bug-for-special-crafted-EXIF-properties.patch
