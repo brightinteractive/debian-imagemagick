@@ -1,3 +1,11 @@
+imagemagick (8:6.6.0.4-3+squeeze3) stable-security; urgency=high
+
+  * Fix my blunder in the previous patch (closes: #670980, #671002). 
+    All credit for patches of +squeeeze2 and the current fix go to 
+    Bastien Roucaries. 
+
+ -- Vincent Fourmond <fourmond@debian.org>  Wed, 02 May 2012 20:26:45 +0200
+
 imagemagick (8:6.6.0.4-3+squeeze2) stable-security; urgency=high
 
   * Fix "Invalid validation DoS CVE-2012-1185 / CVE-2012-1186 (incomplete fix)" 
@@ -12,7 +20,6 @@ imagemagick (8:6.6.0.4-3+squeeze2) stable-security; urgency=high
   - Vulnerability CVE-2012-1798 can cause program to crash when
     reading invalid memory, while parsing EXIF IFD in a TIFF file.
   - Vulnerability CVE-2012-1610 Fix a Potential EXIF Integer Overflow
-
 
  -- Vincent Fourmond <fourmond@debian.org>  Wed, 18 Apr 2012 23:05:08 +0200
 
