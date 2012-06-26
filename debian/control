@@ -94,11 +94,11 @@ Architecture: any
 Multi-Arch: same
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmagickcore5 (= ${binary:Version})
 Enhances: libmagickcore5
 Provides: libmagickcore-extra
 Description: low-level image manipulation library - extra codecs
- This package adds support for SVG, WMF, OpenEXR, DjVu and Graphviz to
+ This package adds support for SVG, WMF, OpenEXR, DjVu to
  MagickCore.
 
 Package: libmagickcore-dev
