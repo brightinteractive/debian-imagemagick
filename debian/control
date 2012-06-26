@@ -95,6 +95,8 @@ Multi-Arch: same
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}, libmagickcore5 (= ${binary:Version})
+Replaces: libmagickcore5 (<< 8:6.7.7.9-1)
+Breaks: libmagickcore5 (<< 8:6.7.7.9-1)
 Enhances: libmagickcore5
 Provides: libmagickcore-extra
 Description: low-level image manipulation library - extra codecs
