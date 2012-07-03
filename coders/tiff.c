@@ -426,6 +426,52 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
 %
 */
 
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+static MagickBooleanType LabImage(Image *image,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if ((QuantumScale*GetPixela(q)) > 0.5)
+        SetPixela(q,QuantumRange*(QuantumScale*GetPixela(q)-1.0));
+      if ((QuantumScale*GetPixelb(q)) > 0.5)
+        SetPixelb(q,QuantumRange*(QuantumScale*GetPixelb(q)-1.0));
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+#endif
+
 static inline size_t MagickMax(const size_t x,const size_t y)
 {
   if (x > y)
@@ -1677,6 +1723,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     SetQuantumImageType(image,quantum_type);
   next_tiff_frame:
     quantum_info=DestroyQuantumInfo(quantum_info);
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+    if (photometric == PHOTOMETRIC_CIELAB)
+      LabImage(image,exception);
+#endif
     if ((photometric == PHOTOMETRIC_LOGL) ||
         (photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
@@ -2833,8 +2883,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           }
       }
     if ((photometric == PHOTOMETRIC_RGB) &&
-        (IssRGBColorspace(image->colorspace) == MagickFalse) &&
-        (IsRGBColorspace(image->colorspace) == MagickFalse))
+        (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse))
       (void) TransformImageColorspace(image,sRGBColorspace);
     switch (image->endian)
     {
@@ -2959,8 +3008,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (image_info->quality != UndefinedCompressionQuality)
           (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
         (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RAW);
-        if ((IssRGBColorspace(image->colorspace) != MagickFalse) ||
-            (IsRGBColorspace(image->colorspace) != MagickFalse))
+        if (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse)
           {
             const char
               *value;
