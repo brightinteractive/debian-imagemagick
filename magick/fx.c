@@ -46,6 +46,7 @@
 #include "magick/attribute.h"
 #include "magick/cache.h"
 #include "magick/cache-view.h"
+#include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/colorspace.h"
@@ -4882,6 +4883,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       stereo_image=DestroyImage(stereo_image);
       return((Image *) NULL);
     }
+  (void) SetImageColorspace(stereo_image,sRGBColorspace);
   /*
     Copy left image to red channel and right image to blue channel.
   */

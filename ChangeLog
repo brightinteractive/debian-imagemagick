@@ -1,3 +1,29 @@
+2012-07-08  6.7.8-2 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-2, SVN revision 8621.
+
+2012-07-02  6.7.8-2 Cristy  <quetzlzacatenango@image...>
+  * Set the colorspace to linear gray when reading intensity values (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21362).
+  * Change Lab encoding to permit blurring, resize, etc.
+  * Don't overrun pixel buffer on inverse fourier for odd image widths.
+
+2012-07-04  6.7.8-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-1, SVN revision 8595.
+
+2012-07-02  6.7.8-1 Cristy  <quetzlzacatenango@image...>
+  * A single argument -stereo option now works as documented (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21348).
+  * The -separate option returns channels as linear grayscale.
+  * Remove the sRGB color profile when converting to grayscale (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21355).
+
+2012-06-29  6.7.8-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-0, SVN revision 8554.
+
+2012-06-28  6.8.0-0 Cristy  <quetzlzacatenango@image...>
+  * Increase epsilon value, smallest difference between two points (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=15870).
+
 2012-06-28  6.7.7-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.7-10, SVN revision 8534.
 

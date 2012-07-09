@@ -47,6 +47,7 @@
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/cache.h"
+#include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/colormap.h"
@@ -3347,12 +3348,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
            * and reset image->chromaticity.
            */
           SetImageColorspace(image,GRAYColorspace);
-        }
-    
-      else
-        {
-          /* Use colorspace data from PNG ancillary chunks */
-          image->colorspace=GRAYColorspace;
         }
     }
 
