@@ -28,7 +28,7 @@ endif
 # libtools wrapper scripts don't work.
 # And for some reasons, the delegates are missing here.
 # use the recently builded convert using upstream script
-CONVERT = $(CURDIR)/magick.sh convert
+CONVERT = sh $(CURDIR)/magick.sh convert
 
 # ARGH, we use graphicsmagick convert to avoid painful circular dependencies...
 # CONVERT = /usr/bin/convert
