@@ -51,7 +51,6 @@ AC_CONFIG_FILES([\
     magick/MagickCore.pc \
     magick/version.h \
     Makefile \
-    magick.sh \
     PerlMagick/Magick.pm \
     PerlMagick/Makefile.PL \
     PerlMagick/check.sh \
@@ -71,6 +70,7 @@ AC_CONFIG_FILES([\
     wand/MagickWand.pc \
     wand/Wand-config \
     wand/Wand.pc ])
+AC_CONFIG_FILES([magick.sh],[chmod +x magick.sh])
 
 #
 # Save initial user-tunable values
