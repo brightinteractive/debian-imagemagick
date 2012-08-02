@@ -1,3 +1,10 @@
+imagemagick (8:6.6.0.4-3+squeeze4) stable; urgency=low
+
+  * Bug fix: "CVE-2012-3437", ImageMagick: Magick_png_malloc() size 
+  argument thanks to Moritz Muehlenhoff (Closes: #683285).
+
+ -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Thu, 02 Aug 2012 21:22:42 +0200
+
 imagemagick (8:6.6.0.4-3+squeeze3) stable-security; urgency=high
 
   * Fix my blunder in the previous patch (closes: #670980, #671002). 
