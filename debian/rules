@@ -178,7 +178,6 @@ install: build check
 	find $(DESTDIR)/usr/lib -name '*.la' -exec \
 		sed -i "s,^dependency_libs=.*,dependency_libs=''," {} \;
 
-
 # Build architecture-independent files here.
 binary-indep: build install
 # We have nothing to do by default.
@@ -198,6 +197,8 @@ binary-arch: build check install
 	dh_installman
 	dh_installmime
 	dh_installinfo
+	# build icons cache
+	dh_icons -pimagemagick
 	dh_installchangelogs
 	dh_link
 	dh_strip --dbg-package=imagemagick-dbg
