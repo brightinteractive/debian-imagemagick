@@ -26,7 +26,7 @@ endif
 
 # Use builded imagemagick
 CONVERT = $(CURDIR)/magick.sh convert
-CONVERT_FLAGS = -define filter:blur=0.75 -filter Gaussian
+CONVERT_FLAGS = -background none -define filter:blur=0.75 -filter Gaussian
 
 build: build-stamp
 build-stamp: $(QUILT_STAMPFN)
