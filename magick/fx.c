@@ -46,6 +46,7 @@
 #include "magick/attribute.h"
 #include "magick/cache.h"
 #include "magick/cache-view.h"
+#include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/colorspace.h"
@@ -195,6 +196,8 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
     Force right-to-left associativity for unary negation.
   */
   (void) SubstituteString(&fx_info->expression,"-","-1.0*");
+  (void) SubstituteString(&fx_info->expression,"E-1.0*","E-");
+  (void) SubstituteString(&fx_info->expression,"e-1.0*","e-");
   /*
     Convert complex to simple operators.
   */
@@ -313,6 +316,8 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
       noise_image=DestroyImage(noise_image);
       return((Image *) NULL);
     }
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(noise_image,RGBColorspace);
   /*
     Add noise in each row.
   */
@@ -716,7 +721,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
     }
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsPixelGray(&colorize) != MagickFalse))
-    (void) SetImageColorspace(colorize_image,sRGBColorspace);
+    (void) SetImageColorspace(colorize_image,RGBColorspace);
   if ((colorize_image->matte == MagickFalse) &&
       (colorize.opacity != OpaqueOpacity))
     (void) SetImageAlphaChannel(colorize_image,OpaqueAlphaChannel);
@@ -1140,16 +1145,13 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
   for (p=symbol; (*p != '.') && (*p != '\0'); p++) ;
   if (*p == '.')
-    switch (*++p)  /* e.g. depth.r */
     {
-      case 'r': channel=RedChannel; break;
-      case 'g': channel=GreenChannel; break;
-      case 'b': channel=BlueChannel; break;
-      case 'c': channel=CyanChannel; break;
-      case 'm': channel=MagentaChannel; break;
-      case 'y': channel=YellowChannel; break;
-      case 'k': channel=BlackChannel; break;
-      default: break;
+      ssize_t
+        option;
+
+      option=ParseCommandOption(MagickChannelOptions,MagickTrue,p+1);
+      if (option >= 0)
+        channel=(ChannelType) option;
     }
   (void) FormatLocaleString(key,MaxTextExtent,"%p.%.20g.%s",(void *) image,
     (double) channel,symbol);
@@ -2978,7 +2980,7 @@ static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   fx_info=(FxInfo **) AcquireQuantumMemory(number_threads,sizeof(*fx_info));
   if (fx_info == (FxInfo **) NULL)
     return((FxInfo **) NULL);
@@ -4247,7 +4249,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(clone_image,sRGBColorspace);
+    (void) TransformImageColorspace(clone_image,RGBColorspace);
   (void) SetImageVirtualPixelMethod(clone_image,EdgeVirtualPixelMethod);
   clone_image->compose=OverCompositeOp;
   border_info.width=(size_t) floor(2.0*sigma+0.5);
@@ -4882,6 +4884,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       stereo_image=DestroyImage(stereo_image);
       return((Image *) NULL);
     }
+  (void) SetImageColorspace(stereo_image,sRGBColorspace);
   /*
     Copy left image to red channel and right image to blue channel.
   */
@@ -5206,7 +5209,7 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
     }
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsPixelGray(&tint) == MagickFalse))
-    (void) SetImageColorspace(tint_image,sRGBColorspace);
+    (void) SetImageColorspace(tint_image,RGBColorspace);
   if (opacity == (const char *) NULL)
     return(tint_image);
   /*
@@ -5227,11 +5230,11 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
   else
     pixel.opacity=(MagickRealType) OpaqueOpacity;
   color_vector.red=(MagickRealType) (pixel.red*tint.red/100.0-
-    PixelIntensity(&tint));
+    GetPixelIntensity(image,&tint));
   color_vector.green=(MagickRealType) (pixel.green*tint.green/100.0-
-    PixelIntensity(&tint));
+    GetPixelIntensity(image,&tint));
   color_vector.blue=(MagickRealType) (pixel.blue*tint.blue/100.0-
-    PixelIntensity(&tint));
+    GetPixelIntensity(image,&tint));
   /*
     Tint image.
   */

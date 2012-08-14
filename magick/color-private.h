@@ -27,17 +27,35 @@ extern "C" {
 #include <magick/exception-private.h>
 #include <magick/pixel-private.h>
 
-static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
-  const PixelPacket *q)
+static inline MagickRealType GetPixelIntensity(const Image *image,
+  const PixelPacket *pixel)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
 
-  red=(double) p->red;
-  green=(double) p->green;
-  blue=(double) p->blue;
+  if (image->colorspace == GRAYColorspace)
+    return((MagickRealType) pixel->red);
+  if (image->colorspace != sRGBColorspace)
+    return(0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue);
+  red=InversesRGBCompandor((MagickRealType) pixel->red);
+  green=InversesRGBCompandor((MagickRealType) pixel->green);
+  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
+  return((MagickRealType) (0.298839*red+0.586811*green+0.114350*blue));
+}
+
+static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
+  const PixelPacket *q)
+{
+  MagickRealType
+    blue,
+    green,
+    red;
+
+  red=(MagickRealType) p->red;
+  green=(MagickRealType) p->green;
+  blue=(MagickRealType) p->blue;
   if ((fabs(red-q->red) < MagickEpsilon) &&
       (fabs(green-q->green) < MagickEpsilon) &&
       (fabs(blue-q->blue) < MagickEpsilon))
@@ -86,14 +104,14 @@ static inline MagickBooleanType IsMagickGray(const MagickPixelPacket *pixel)
 
 static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
 
-  red=(double) pixel->red;
-  green=(double) pixel->green;
-  blue=(double) pixel->blue;
+  red=(MagickRealType) pixel->red;
+  green=(MagickRealType) pixel->green;
+  blue=(MagickRealType) pixel->blue;
   if ((fabs(red-green) < MagickEpsilon) && (fabs(green-blue) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
@@ -102,7 +120,7 @@ static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
 static inline MagickRealType MagickPixelIntensity(
   const MagickPixelPacket *pixel)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
@@ -111,16 +129,16 @@ static inline MagickRealType MagickPixelIntensity(
     return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
     return(0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue);
-  red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
-  green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
-  blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
+  red=InversesRGBCompandor(pixel->red);
+  green=InversesRGBCompandor(pixel->green);
+  blue=InversesRGBCompandor(pixel->blue);
   return(0.298839*red+0.586811*green+0.114350*blue);
 }
 
 static inline Quantum MagickPixelIntensityToQuantum(
   const MagickPixelPacket *pixel)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
@@ -130,16 +148,16 @@ static inline Quantum MagickPixelIntensityToQuantum(
   if (pixel->colorspace != sRGBColorspace)
     return(ClampToQuantum(0.298839*pixel->red+0.586811*pixel->green+
       0.114350*pixel->blue));
-  red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
-  green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
-  blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
+  red=InversesRGBCompandor(pixel->red);
+  green=InversesRGBCompandor(pixel->green);
+  blue=InversesRGBCompandor(pixel->blue);
   return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
 }
 
 static inline MagickRealType MagickPixelLuminance(
   const MagickPixelPacket *pixel)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
@@ -148,48 +166,29 @@ static inline MagickRealType MagickPixelLuminance(
     return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
     return(0.21267*pixel->red+0.71516*pixel->green+0.07217*pixel->blue);
-  red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
-  green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
-  blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
+  red=InversesRGBCompandor(pixel->red);
+  green=InversesRGBCompandor(pixel->green);
+  blue=InversesRGBCompandor(pixel->blue);
   return(0.21267*red+0.71516*green+0.07217*blue);
-}
-
-static inline MagickRealType PixelIntensity(const PixelPacket *pixel)
-{
-  double
-    blue,
-    green,
-    red;
-
-  MagickRealType
-    intensity;
-
-  if ((pixel->red == pixel->green) && (pixel->green == pixel->blue))
-    return((MagickRealType) pixel->red);
-  red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
-  green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
-  blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
-  intensity=(MagickRealType) (0.298839*red+0.586811*green+0.114350*blue);
-  return(intensity);
 }
 
 static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
 
-  red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
-  green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
-  blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
+  red=InversesRGBCompandor((MagickRealType) pixel->red);
+  green=InversesRGBCompandor((MagickRealType) pixel->green);
+  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
   return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
 }
 
 static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
   const PixelPacket *restrict pixel)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
@@ -199,9 +198,9 @@ static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
   if (image->colorspace != sRGBColorspace)
     return(ClampToQuantum(0.298839*pixel->red+0.586811*pixel->green+0.114350*
       pixel->blue));
-  red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
-  green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
-  blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
+  red=InversesRGBCompandor((MagickRealType) pixel->red);
+  green=InversesRGBCompandor((MagickRealType) pixel->green);
+  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
   return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
 }
 

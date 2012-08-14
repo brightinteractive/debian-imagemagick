@@ -28,6 +28,20 @@ extern "C" {
 #include "magick/memory_.h"
 #include "magick/quantum-private.h"
 
+static inline MagickRealType InversesRGBCompandor(const MagickRealType pixel)
+{
+  if (pixel <= (0.04045*QuantumRange))
+    return(pixel/12.92);
+  return(QuantumRange*pow((QuantumScale*pixel+0.055)/1.055,2.4));
+}
+
+static inline MagickRealType sRGBCompandor(const MagickRealType pixel)
+{
+  if (pixel <= (0.0031308*QuantumRange))
+    return(12.92*pixel);
+  return(QuantumRange*(1.055*pow(QuantumScale*pixel,1.0/2.4)-0.055));
+}
+
 static inline MagickBooleanType IsGrayPixel(const PixelPacket *pixel)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
@@ -78,22 +92,8 @@ static inline MagickRealType MagickEpsilonReciprocal(const MagickRealType x)
 {
   MagickRealType sign = x < (MagickRealType) 0.0 ? (MagickRealType) -1.0 : 
     (MagickRealType) 1.0;
-  return((sign*x) > MagickEpsilon ? (MagickRealType) 1.0/x : sign*(
+  return((sign*x) >= MagickEpsilon ? (MagickRealType) 1.0/x : sign*(
     (MagickRealType) 1.0/MagickEpsilon));
-}
-
-static inline double CompandsRGB(const double intensity)
-{
-  if (intensity <= 0.0031308)
-    return(intensity*12.92);
-  return(1.055*pow(intensity,1.0/2.4)-0.055);
-}
-
-static inline double DecompandsRGB(const double intensity)
-{
-  if (intensity <= 0.04045)
-    return(intensity/12.92);
-  return(pow((intensity+0.055)/1.055,2.4));
 }
 
 static inline void SetMagickPixelPacket(const Image *image,

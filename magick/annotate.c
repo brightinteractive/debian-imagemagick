@@ -46,6 +46,7 @@
 #include "magick/annotate.h"
 #include "magick/attribute.h"
 #include "magick/cache-view.h"
+#include "magick/channel.h"
 #include "magick/client.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
@@ -282,7 +283,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) TransformImageColorspace(image,RGBColorspace);
   status=MagickTrue;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
@@ -573,7 +574,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     status=GetTypeMetrics(image,draw_info,metrics);
     if (status == MagickFalse)
       break;
-    width=(size_t) floor(metrics->width+0.5);
+    width=(size_t) floor(metrics->width+metrics->max_advance/2.0+0.5);
     if ((width <= image->columns) || (strcmp(text,draw_info->text) == 0))
       continue;
     (void) strcpy(text,draw_info->text);

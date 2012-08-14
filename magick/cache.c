@@ -203,8 +203,10 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   cache_info->file=(-1);
   cache_info->id=GetMagickThreadId();
   cache_info->number_threads=number_threads;
-  if (number_threads == 0)
-    cache_info->number_threads=GetOpenMPMaximumThreads();
+  if (cache_info->number_threads == 0)
+    cache_info->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  if (cache_info->number_threads == 0)
+    cache_info->number_threads=1;
   cache_info->nexus_info=AcquirePixelCacheNexus(cache_info->number_threads);
   if (cache_info->nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -1388,7 +1390,7 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
     case MemoryCache:
     {
       if (cache_info->mapped == MagickFalse)
-        cache_info->pixels=(PixelPacket *) RelinquishMagickMemory(
+        cache_info->pixels=(PixelPacket *) RelinquishAlignedMemory(
           cache_info->pixels);
       else
         cache_info->pixels=(PixelPacket *) UnmapBlob(cache_info->pixels,
@@ -1498,7 +1500,7 @@ MagickExport Cache DestroyPixelCache(Cache cache)
 static inline void RelinquishCacheNexusPixels(NexusInfo *nexus_info)
 {
   if (nexus_info->mapped == MagickFalse)
-    (void) RelinquishMagickMemory(nexus_info->cache);
+    (void) RelinquishAlignedMemory(nexus_info->cache);
   else
     (void) UnmapBlob(nexus_info->cache,(size_t) nexus_info->length);
   nexus_info->cache=(PixelPacket *) NULL;
@@ -3917,7 +3919,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
 static inline void AllocatePixelCachePixels(CacheInfo *cache_info)
 {
   cache_info->mapped=MagickFalse;
-  cache_info->pixels=(PixelPacket *) AcquireMagickMemory((size_t)
+  cache_info->pixels=(PixelPacket *) AcquireAlignedMemory(1,(size_t)
     cache_info->length);
   if (cache_info->pixels == (PixelPacket *) NULL)
     {
@@ -4969,7 +4971,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
   if (nexus_info->length != (MagickSizeType) ((size_t) nexus_info->length))
     return(MagickFalse);
   nexus_info->mapped=MagickFalse;
-  nexus_info->cache=(PixelPacket *) AcquireMagickMemory((size_t)
+  nexus_info->cache=(PixelPacket *) AcquireAlignedMemory(1,(size_t)
     nexus_info->length);
   if (nexus_info->cache == (PixelPacket *) NULL)
     {
@@ -5199,7 +5201,7 @@ MagickExport VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
           (void) SetCacheAlphaChannel((Image *) image,OpaqueOpacity);
         if ((IsPixelGray(&image->background_color) == MagickFalse) &&
             (IsGrayColorspace(image->colorspace) != MagickFalse))
-          (void) TransformImageColorspace((Image *) image,sRGBColorspace);
+          (void) TransformImageColorspace((Image *) image,RGBColorspace);
         break;
       }
       case TransparentVirtualPixelMethod:

@@ -1,3 +1,143 @@
+2012-08-12  6.7.8-10 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-10, SVN revision 8915.
+
+2012-08-10  6.7.8-9 Cristy  <quetzlzacatenango@image...>
+  * Respect the image mask for option -selective-blur (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21631).
+  * Fix multiple issues with BMPv5 colorimetry (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21640).
+
+2012-08-10  6.7.8-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-9, SVN revision 8902.
+
+2012-08-07  6.7.8-9 Cristy  <quetzlzacatenango@image...>
+  * Selective blur stopped working after version 6.7.4-10 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21604).
+  * Color reduction now handles transparent pixel properly (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18463).
+  * ClipImagePath() now returns a valid SVG XML for Windows x64 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21617).
+
+2012-08-05  6.7.8-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-8, SVN revision 8845.
+
+2012-08-03  6.7.8-8 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added 2d named convolution kernel Binomial (for Fred Wienhaus)
+
+2012-08-01  6.7.8-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * Clean up sigmoidal-contrast.
+
+2012-07-31  6.7.8-8 Cristy  <quetzlzacatenango@image...>
+  * Use ConcatenateString() for multi-block GIF comments.
+  * Caption no longer chops off text (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21558).
+  * Support LUV colorspace.
+  * Support HCL colorspace.
+  * Don't transform the composite image colorspace, set it instead.
+  * Interpret -border 5% as 5% of width and 5% of height (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21537).
+  * Don't normalize zero-sum kernels (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21584).
+  * Transform grayscale to linear RGB if fill color is non-gray (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21586).
+
+2012-07-30  6.7.8-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-7, SVN revision 8766.
+
+2012-07-28  6.7.8-7 Glenn Randers-Pehrson <glennrp@image...>
+  * Update certain typecasts for libpng < and >= 1.4.0 to allow memory
+    allocation > 4GB and prevent a DOS.
+
+2012-07-28  6.7.8-7 Cristy  <quetzlzacatenango@image...>
+  * Set DICOM grayscale images to the gray colorspace.
+  * Missing grestore from ps3.c (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20445).
+  * Use GetMagickResourceLimit(ThreadResource) to set the # threads (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21543).
+
+2012-07-22  6.7.8-6 Glenn Randers-Pehrson <glennrp@image...>
+  * Only report sRGB, iCCP, gAMA, cHRM chunks in "identify" output when
+    these chunks were actually present in input, and not when they were
+    inserted by the PNG decoder.
+
+2012-07-22  6.7.8-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-6, SVN revision 8720.
+
+2012-07-21  6.7.8-6 Glenn Randers-Pehrson <glennrp@image...>
+  * Make sure "intent" is initialized in the PNG decoder.
+
+2012-07-21  6.7.8-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-5, SVN revision 8717.
+
+2012-07-20  6.7.8-5 Glenn Randers-Pehrson <glennrp@image...>
+  * Corrected an error in the logic introduced in 6.7.8-3 to always write
+    a color PNG when image->colorspace is sRGB.
+
+2012-07-19  6.7.8-5 Cristy  <quetzlzacatenango@image...>
+  * Inverse YUV colorspace now produces pure red as expected.
+  * Support halted streams:
+    cat image.pnm | convert 'pnm:fd:0[0]' 'pnm:fd:0[0]' x:.
+
+2012-07-18  6.7.8-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-4, SVN revision 8697.
+
+2012-07-17  6.7.8-4 Glenn Randers-Pehrson <glennrp@image...>
+  * Write ICON subimage as PNG32, only when its dimensions are 256x256
+    and image->compression is UndefinedCompression or ZipCompression.
+
+2012-07-16  6.7.8-4 Cristy  <quetzlzacatenango@image...>
+  * sRGB color gradients should be in a non-linear colorspace.
+  * Fix -fx to interpret scientific notation properly.
+  * The draw epsilon was too sensitive.
+
+2012-07-15  6.7.8-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-3, SVN revision 8675.
+
+2012-07-14  6.7.8-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Always write a color PNG when image->colorspace is sRGB.
+
+2012-07-08  6.7.8-3 Cristy  <quetzlzacatenango@image...>
+  * Attenuate random noise (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21387).
+  * Return linear grayscale for gradient:white-black.
+  * Promote linear grayscale to linear RGB when compositing.
+  * gradient:white-black is sRGB whereas gradient:'icc-color(rgb,255,255,255)-
+    icc-color(rgb,0,0,0)' is linear RGB whereas gradient:'gray(255)-gray(0)' is
+    linear grayscale.
+  * Revert sigmoidal contrast define (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=22&t=21415).
+
+2012-07-08  6.7.8-2 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-2, SVN revision 8621.
+
+2012-07-02  6.7.8-2 Cristy  <quetzlzacatenango@image...>
+  * Set the colorspace to linear gray when reading intensity values (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21362).
+  * Don't overrun pixel buffer on inverse fourier for odd image widths.
+  * Change LAB encoding to permit blurring, resize, etc.
+    (signed A and B channel values now stored using a 50% bias)
+
+    Additional.. This removes a non-linear discontinuity from stored LAB space
+    values. As a result you can now Blur, Compose, Resize and Distort in LAB
+    colorspace, without problems that previously existed.
+
+2012-07-04  6.7.8-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-1, SVN revision 8595.
+
+2012-07-02  6.7.8-1 Cristy  <quetzlzacatenango@image...>
+  * A single argument -stereo option now works as documented (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21348).
+  * The -separate option returns channels as linear grayscale.
+  * Remove the sRGB color profile when converting to grayscale (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21355).
+
+2012-06-29  6.7.8-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-0, SVN revision 8554.
+
+2012-06-28  6.8.0-0 Cristy  <quetzlzacatenango@image...>
+  * Increase epsilon value, smallest difference between two points (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=15870).
+
 2012-06-28  6.7.7-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.7-10, SVN revision 8534.
 
@@ -124,6 +264,7 @@
     previous to this version it was equivalent to 'Average16'.
     The 'Background' method is for showing 'resample errors' be it
     accidental, or on purpose.  See IM Examples, Cylindrical Filters.
+  * added -interpolative-resize added around this version
 
 2012-05-26  6.7.7-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.7-2, SVN revision 8066.
@@ -352,7 +493,7 @@
   * New version 6.7.5-8, SVN revision 7027.
 
 2012-03-02  6.7.5-8 Glenn Randers-Pehrson <glennrp@image...>
-  * non-verbose identify now reports DirectClass for transparent PNG images 
+  * non-verbose identify now reports DirectClass for transparent PNG images
     to agree with the report by identify -verbose.  (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20448 and
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=15482).
@@ -535,7 +676,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19964).
   * MagickGetImageDepth() no longer returns the depth setting but instead
     computes the depth of the image.
-   
+
 2011-12-02  6.7.4-0 Anthony  <quetzlzacatenango@image...>
   * Fixed Equal-Area Cropping (size and minimum of delta increments)
 
@@ -952,7 +1093,7 @@
 2011-05-20  6.6.9-10 Glenn Randers-Pehrson <glennrp@image...>
   * The PNG encoder now respects the -depth setting, including 1, 2, 4.
     Previously settings other than 8 and 16 were ignored (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18412). 
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18412).
 
 2011-05-16  6.6.9-10 Cristy  <quetzlzacatenango@image...>
   * Don't use comma as a separator for stroked text (reference

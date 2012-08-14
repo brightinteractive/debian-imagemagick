@@ -321,7 +321,8 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
         v;
 
       gamma=0.0;
-      i=(ssize_t) ceil((double) width*QuantumScale*PixelIntensity(r)-0.5);
+      i=(ssize_t) ceil((double) width*QuantumScale*
+        GetPixelIntensity(edge_image,r)-0.5);
       if (i < 0)
         i=0;
       else
@@ -640,7 +641,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
 
       gamma=0.0;
       i=(ssize_t) ceil((double) width*(QuantumRange-QuantumScale*
-        PixelIntensity(r))-0.5);
+        GetPixelIntensity(edge_image,r))-0.5);
       if (i < 0)
         i=0;
       else
@@ -1189,8 +1190,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
           gamma=0.0;
           for (i=0; i < (ssize_t) width; i++)
           {
-            alpha=(MagickRealType) (QuantumScale*
-              GetPixelAlpha(kernel_pixels));
+            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(kernel_pixels));
             pixel.red+=(*k)*alpha*GetPixelRed(kernel_pixels);
             pixel.green+=(*k)*alpha*GetPixelGreen(kernel_pixels);
             pixel.blue+=(*k)*alpha*GetPixelBlue(kernel_pixels);
@@ -1999,6 +1999,8 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     kernel[i]=(-1.0);
   kernel[i/2]=(double) (width*width-1.0);
   edge_image=ConvolveImage(image,width,kernel,exception);
+  if (edge_image != (Image *) NULL)
+    (void) ClampImage(edge_image);
   kernel=(double *) RelinquishAlignedMemory(kernel);
   return(edge_image);
 }
@@ -3682,14 +3684,6 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
 %
 */
 
-static inline MagickBooleanType SelectiveContrast(const PixelPacket *p,
-  const PixelPacket *q,const double threshold)
-{
-  if (fabs(PixelIntensity(p)-PixelIntensity(q)) < threshold)
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
 MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   const double sigma,const double threshold,ExceptionInfo *exception)
 {
@@ -3709,13 +3703,15 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
 
   CacheView
     *blur_view,
-    *image_view;
+    *image_view,
+    *luminance_view;
 
   double
     *kernel;
 
   Image
-    *blur_image;
+    *blur_image,
+    *luminance_image;
 
   MagickBooleanType
     status;
@@ -3733,6 +3729,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
     width;
 
   ssize_t
+    center,
     j,
     u,
     v,
@@ -3793,11 +3790,31 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
     }
   blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
-    return((Image *) NULL);
+    {
+      kernel=(double *) RelinquishAlignedMemory(kernel);
+      return((Image *) NULL);
+    }
   if (SetImageStorageClass(blur_image,DirectClass) == MagickFalse)
     {
+      kernel=(double *) RelinquishAlignedMemory(kernel);
       InheritException(exception,&blur_image->exception);
       blur_image=DestroyImage(blur_image);
+      return((Image *) NULL);
+    }
+  luminance_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (luminance_image == (Image *) NULL)
+    {
+      kernel=(double *) RelinquishAlignedMemory(kernel);
+      blur_image=DestroyImage(blur_image);
+      return((Image *) NULL);
+    }
+  status=TransformImageColorspace(luminance_image,GRAYColorspace);
+  if (status == MagickFalse)
+    {
+      InheritException(exception,&luminance_image->exception);
+      kernel=(double *) RelinquishAlignedMemory(kernel);
+      blur_image=DestroyImage(blur_image);
+      luminance_image=DestroyImage(luminance_image);
       return((Image *) NULL);
     }
   /*
@@ -3805,11 +3822,13 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   */
   status=MagickTrue;
   progress=0;
+  center=(ssize_t) ((image->columns+width)*(width/2L)+(width/2L));
   GetMagickPixelPacket(image,&bias);
   SetMagickPixelPacketBias(image,&bias);
   image_view=AcquireVirtualCacheView(image,exception);
+  luminance_view=AcquireVirtualCacheView(luminance_image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MMAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -3825,6 +3844,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
       *restrict indexes;
 
     register const PixelPacket
+      *restrict l,
       *restrict p;
 
     register IndexPacket
@@ -3840,9 +3860,12 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
       (width/2L),image->columns+width,width,exception);
+    l=GetCacheViewVirtualPixels(luminance_view,-((ssize_t) width/2L),y-(ssize_t)
+      (width/2L),luminance_image->columns+width,width,exception);
     q=GetCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) ||
+        (l == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -3851,8 +3874,14 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
     blur_indexes=GetCacheViewAuthenticIndexQueue(blur_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        contrast;
+
       MagickPixelPacket
         pixel;
+
+      MagickRealType
+        intensity;
 
       register const double
         *restrict k;
@@ -3866,6 +3895,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
 
       pixel=bias;
       k=kernel;
+      intensity=GetPixelIntensity(image,p+center);
       gamma=0.0;
       j=0;
       if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
@@ -3874,7 +3904,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
           {
             for (u=0; u < (ssize_t) width; u++)
             {
-              if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+              contrast=GetPixelIntensity(luminance_image,l+u+j)-intensity;
+              if (fabs(contrast) < threshold)
                 {
                   pixel.red+=(*k)*GetPixelRed(p+u+j);
                   pixel.green+=(*k)*GetPixelGreen(p+u+j);
@@ -3903,7 +3934,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
               {
                 for (u=0; u < (ssize_t) width; u++)
                 {
-                  if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+                  contrast=GetPixelIntensity(luminance_image,l+u+j)-intensity;
+                  if (fabs(contrast) < threshold)
                     {
                       pixel.opacity+=(*k)*(p+u+j)->opacity;
                       gamma+=(*k);
@@ -3924,7 +3956,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
               {
                 for (u=0; u < (ssize_t) width; u++)
                 {
-                  if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+                  contrast=GetPixelIntensity(luminance_image,l+u+j)-intensity;
+                  if (fabs(contrast) < threshold)
                     {
                       pixel.index+=(*k)*GetPixelIndex(indexes+x+u+j);
                       gamma+=(*k);
@@ -3946,7 +3979,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
           {
             for (u=0; u < (ssize_t) width; u++)
             {
-              if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+              contrast=GetPixelIntensity(luminance_image,l+u+j)-intensity;
+              if (fabs(contrast) < threshold)
                 {
                   alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(p+u+j));
                   pixel.red+=(*k)*alpha*GetPixelRed(p+u+j);
@@ -3977,7 +4011,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
               {
                 for (u=0; u < (ssize_t) width; u++)
                 {
-                  if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+                  contrast=GetPixelIntensity(luminance_image,l+u+j)-intensity;
+                  if (fabs(contrast) < threshold)
                     {
                       pixel.opacity+=(*k)*GetPixelOpacity(p+u+j);
                       gamma+=(*k);
@@ -3998,7 +4033,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
               {
                 for (u=0; u < (ssize_t) width; u++)
                 {
-                  if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+                  contrast=GetPixelIntensity(luminance_image,l+u+j)-intensity;
+                  if (fabs(contrast) < threshold)
                     {
                       alpha=(MagickRealType) (QuantumScale*
                         GetPixelAlpha(p+u+j));
@@ -4014,6 +4050,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
             }
         }
       p++;
+      l++;
       q++;
     }
     sync=SyncCacheViewAuthenticPixels(blur_view,exception);
@@ -4035,7 +4072,9 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   }
   blur_image->type=image->type;
   blur_view=DestroyCacheView(blur_view);
+  luminance_view=DestroyCacheView(luminance_view);
   image_view=DestroyCacheView(image_view);
+  luminance_image=DestroyImage(luminance_image);
   kernel=(double *) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
@@ -4179,12 +4218,14 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=(double) (PixelIntensity(s0-1)+PixelIntensity(s1-1)+
-        PixelIntensity(s2-1)-PixelIntensity(s0+1)-PixelIntensity(s1+1)-
-        PixelIntensity(s2+1));
-      normal.y=(double) (PixelIntensity(s2-1)+PixelIntensity(s2)+
-        PixelIntensity(s2+1)-PixelIntensity(s0-1)-PixelIntensity(s0)-
-        PixelIntensity(s0+1));
+      normal.x=(double) (GetPixelIntensity(image,s0-1)+
+        GetPixelIntensity(image,s1-1)+GetPixelIntensity(image,s2-1)-
+        GetPixelIntensity(image,s0+1)-GetPixelIntensity(image,s1+1)-
+        GetPixelIntensity(image,s2+1));
+      normal.y=(double) (GetPixelIntensity(image,s2-1)+
+        GetPixelIntensity(image,s2)+GetPixelIntensity(image,s2+1)-
+        GetPixelIntensity(image,s0-1)-GetPixelIntensity(image,s0)-
+        GetPixelIntensity(image,s0+1));
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
@@ -4339,6 +4380,8 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   }
   kernel[i/2]=(double) ((-2.0)*normalize);
   sharp_image=ConvolveImageChannel(image,channel,width,kernel,exception);
+  if (sharp_image != (Image *) NULL)
+    (void) ClampImage(sharp_image);
   kernel=(double *) RelinquishAlignedMemory(kernel);
   return(sharp_image);
 }
@@ -4706,6 +4749,8 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
   unsharp_image->type=image->type;
   unsharp_view=DestroyCacheView(unsharp_view);
   image_view=DestroyCacheView(image_view);
+  if (unsharp_image != (Image *) NULL)
+    (void) ClampImage(unsharp_image);
   if (status == MagickFalse)
     unsharp_image=DestroyImage(unsharp_image);
   return(unsharp_image);

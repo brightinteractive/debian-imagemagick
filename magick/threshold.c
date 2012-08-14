@@ -417,7 +417,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    if (channel == DefaultChannels)
+    if ((channel & SyncChannels) != 0)
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
@@ -583,7 +583,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
   intensity=MagickPixelIntensity(&threshold);
   if ((IsMagickGray(&threshold) == MagickFalse) &&
       (IsGrayColorspace(image->colorspace) != MagickFalse))
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) TransformImageColorspace(image,RGBColorspace);
   /*
     Black threshold image.
   */
@@ -616,9 +616,9 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (channel == DefaultChannels)
+      if ((channel & SyncChannels) != 0)
         {
-          if (PixelIntensity(q) < intensity)
+          if (GetPixelIntensity(image,q) < intensity)
             {
               SetPixelRed(q,0);
               SetPixelGreen(q,0);
@@ -698,15 +698,11 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
 
 static inline Quantum ClampToUnsignedQuantum(const Quantum quantum)
 {
-#if defined(MAGICKCORE_HDRI_SUPPORT)
   if (quantum <= 0)
     return(0);
   if (quantum >= QuantumRange)
     return(QuantumRange);
   return(quantum);
-#else
-  return(quantum);
-#endif
 }
 
 MagickExport MagickBooleanType ClampImage(Image *image)
@@ -738,6 +734,9 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   ssize_t
     y;
 
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+  return(MagickTrue);
+#else
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
@@ -825,6 +824,7 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   return(status);
+#endif
 }
 
 /*
@@ -2051,7 +2051,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
   intensity=MagickPixelIntensity(&threshold);
   if ((IsMagickGray(&threshold) == MagickFalse) &&
       (IsGrayColorspace(image->colorspace) != MagickFalse))
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) TransformImageColorspace(image,RGBColorspace);
   /*
     White threshold image.
   */
@@ -2084,9 +2084,9 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (channel == DefaultChannels)
+      if ((channel & SyncChannels) != 0)
         {
-          if (PixelIntensity(q) > intensity)
+          if (GetPixelIntensity(image,q) > intensity)
             {
               SetPixelRed(q,QuantumRange);
               SetPixelGreen(q,QuantumRange);
