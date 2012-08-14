@@ -4,7 +4,8 @@ imagemagick (8:6.7.8.10-1) UNRELEASED; urgency=low
   * Improve download and commit script
   * Depend on libfftw3
   * Suggest graphviz
-
+  * Drop build depend on graphicsmagick's convert. Use builded imagemagick
+  
  -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Tue, 14 Aug 2012 12:59:27 +0200
   
 imagemagick (8:6.7.7.10-3) unstable; urgency=high
