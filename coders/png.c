@@ -70,12 +70,12 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/option.h"
+#include "magick/pixel-accessor.h"
 #include "magick/quantum-private.h"
 #include "magick/profile.h"
 #include "magick/property.h"
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
-#include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
@@ -1140,7 +1140,7 @@ Magick_RenderingIntentString_from_PNG_RenderingIntent(const int ping_intent)
 }
 
 
-static char *
+static const char *
 Magick_ColorType_from_PNG_ColorType(const int ping_colortype)
 {
   switch (ping_colortype)
@@ -2950,12 +2950,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         /*
           Convert image to DirectClass pixel packets.
         */
-#if  (MAGICKCORE_QUANTUM_DEPTH == 8)
-        int
-          depth;
-
-        depth=(ssize_t) ping_bit_depth;
-#endif
         image->matte=(((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
             ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
             (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?

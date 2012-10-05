@@ -66,10 +66,12 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/option.h"
+#include "magick/pixel-accessor.h"
+#include "magick/pixel-private.h"
+#include "magick/profile.h"
 #include "magick/property.h"
 #include "magick/quantum.h"
 #include "magick/quantum-private.h"
-#include "magick/profile.h"
 #include "magick/resize.h"
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
@@ -601,6 +603,8 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image)
   length=0;
   if (TIFFGetField(tiff,37724,&length,&profile) == 1)
     (void) ReadProfile(image,"tiff:37724",profile,(ssize_t) length);
+  if (TIFFGetField(tiff,34118,&length,&profile) == 1)
+    (void) ReadProfile(image,"tiff:34118",profile,(ssize_t) length);
 }
 
 static void TIFFGetProperties(TIFF *tiff,Image *image)
@@ -1073,8 +1077,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution);
     image->x_resolution=x_resolution;
     image->y_resolution=y_resolution;
-    x_position=(float) image->page.x/x_resolution;
-    y_position=(float) image->page.y/y_resolution;
+    x_position=(float) MagickEpsilonReciprocal(x_resolution)*image->page.x;
+    y_position=(float) MagickEpsilonReciprocal(y_resolution)*image->page.y;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_XPOSITION,&x_position);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YPOSITION,&y_position);
     image->page.x=(ssize_t) ceil(x_position*x_resolution-0.5);
@@ -1822,10 +1826,10 @@ static void TIFFTagExtender(TIFF *tiff)
   static const TIFFFieldInfo
     TIFFExtensions[] =
     {
-      {
-        37724, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1,
-          (char *) "PhotoshopLayerData"
-      }
+      { 37724, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1,
+        (char *) "PhotoshopLayerData" },
+      { 34118, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1,
+        (char *) "Microscope" }
     };
 
   TIFFMergeFieldInfo(tiff,TIFFExtensions,sizeof(TIFFExtensions)/
@@ -2509,6 +2513,9 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
 #endif
     if (LocaleCompare(name,"tiff:37724") == 0)
       (void) TIFFSetField(tiff,37724,(uint32) GetStringInfoLength(profile),
+        GetStringInfoDatum(profile));
+    if (LocaleCompare(name,"tiff:34118") == 0)
+      (void) TIFFSetField(tiff,34118,(uint32) GetStringInfoLength(profile),
         GetStringInfoDatum(profile));
     name=GetNextImageProfile(image);
   }

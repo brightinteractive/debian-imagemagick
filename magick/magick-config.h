@@ -883,6 +883,9 @@
 #define MAGICKCORE_HAVE_STRUCT_TM_TM_ZONE 1
 #endif
 
+/* Define to 1 if you have the <sun_prefetch.h> header file. */
+/* #undef HAVE_SUN_PREFETCH_H */
+
 /* Define to 1 if you have the `symlink' function. */
 #ifndef MAGICKCORE_HAVE_SYMLINK
 #define MAGICKCORE_HAVE_SYMLINK 1
@@ -903,6 +906,11 @@
 /* Define to 1 if you have the <sys/ipc.h> header file. */
 #ifndef MAGICKCORE_HAVE_SYS_IPC_H
 #define MAGICKCORE_HAVE_SYS_IPC_H 1
+#endif
+
+/* Define to 1 if you have the <sys/mman.h> header file. */
+#ifndef MAGICKCORE_HAVE_SYS_MMAN_H
+#define MAGICKCORE_HAVE_SYS_MMAN_H 1
 #endif
 
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
@@ -1318,7 +1326,7 @@
 
 /* Define to the full name and version of this package. */
 #ifndef MAGICKCORE_PACKAGE_STRING
-#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.7.9-3"
+#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.7.9-10"
 #endif
 
 /* Define to the one symbol short name of this package. */
@@ -1333,7 +1341,7 @@
 
 /* Define to the version of this package. */
 #ifndef MAGICKCORE_PACKAGE_VERSION
-#define MAGICKCORE_PACKAGE_VERSION "6.7.9-3"
+#define MAGICKCORE_PACKAGE_VERSION "6.7.9-10"
 #endif
 
 /* Define if you have PANGOCAIRO library */
@@ -1523,7 +1531,7 @@
 
 /* Version number of package */
 #ifndef MAGICKCORE_VERSION
-#define MAGICKCORE_VERSION "6.7.9-3"
+#define MAGICKCORE_VERSION "6.7.9-10"
 #endif
 
 /* Define if you have WEBP library */

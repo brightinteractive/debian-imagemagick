@@ -51,6 +51,7 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/pixel-accessor.h"
 #include "magick/property.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
@@ -138,6 +139,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       /*
         Auto fit text into bounding box.
       */
+      status=GetMultilineTypeMetrics(image,draw_info,&metrics);
       for ( ; ; )
       {
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",

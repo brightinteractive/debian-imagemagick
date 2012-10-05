@@ -1,6 +1,95 @@
-2012-08-24  6.7.9-2 Cristy  <quetzlzacatenango@image...>
+2012-10-06  6.7.9-10 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-10, SVN revision 9514.
+
+2012-10-01  6.7.9-10 Cristy  <quetzlzacatenango@image...>
+  * SVG specs says "1pt" equals "1.25px" (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21967).
+  * Support TIFF proprietary tag 34118.
+  * The define option is no longer "lazy" interpretation (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22007).
+
+2012-10-01  6.7.9-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-9, SVN revision 9473.
+
+2012-09-27  6.7.9-9 Cristy  <quetzlzacatenango@image...>
+  * Fix memory leak in JPEG decoder when reading a corrupt image (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21948).
+  * Add exif:thumbnail namespace to distiguish orientation tag (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21938).
+  * Respect DPX data offsets (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21960).
+
+2012-09-26  6.7.9-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-8, SVN revision 9437.
+
+2012-09-24  6.7.9-8 Cristy  <quetzlzacatenango@image...>
+  * Off-by-one error in DrawPolygonPrimitive().
+  * Fix memory leak in WebP decoder (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21943).
+  * Certain caption phrases were cut off (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21550).
+
+2012-09-22  6.7.9-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-7, SVN revision 9410.
+
+2012-09-20  6.7.9-7 Cristy  <quetzlzacatenango@image...>
+  * jpeg:sampling-factor might be an image property or an option (reference
+http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
+
+2012-09-15  6.7.9-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-6, SVN revision 9375.
+
+2012-09-14  6.7.9-6 Cristy  <quetzlzacatenango@image...>
+  * Don't compand the YCC colorspace, its already companded.
+
+2012-09-12  6.7.9-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-5, SVN revision 9358.
+
+2012-09-12  6.7.9-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * Merge static inline Sigmoidal functions from IM7 to IM6.
+
+2012-09-12  6.7.8-5 Anthony Thyssen <A.Thyssen@griffith...>
+  * All untappered windowing filters Welch and Cosine changed to use a 3 lobe
+    support (like Lanczos). These were not part of the original 'zoom' program.
+
+2012-09-11  6.7.9-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * sigmoidal-contrast: prevent out of range argument.
+
+2012-09-09  6.7.9-5 Cristy  <quetzlzacatenango@image...>
+  * The number of default OpenMP threads is 1 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=23&t=21838).
+  * Only first image of raw grayscale image was set to GRAY (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21428).
+  * Change sigmoidal-contrast define to inline method to conform with ANSI-C
+    requirements.
+
+2012-09-10  6.7.9-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * enhance.c improvements:
+  * Add tanh/atanh clone of legacy sigmoidal map (faster & more accurate);
+  * Add final ClampToQuantum in sigmoidal colormap loop;
+  * Remove OpenMP for threads that do not loop over rows;
+  * Immediate no-op exit from sigmoidal-contrast if contrast<MagickEpsilon.
+
+2012-09-08  6.7.9-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-4, SVN revision 9282.
+
+2012-09-05  6.7.9-4 Cristy  <quetzlzacatenango@image...>
+  * Identify image files with embedded '%d' (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21798).
+  * Don't include TIFF header for compress.c source module
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21800).
+
+2012-09-01  6.7.9-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-3, SVN revision 9202.
+
+2012-08-28  6.7.9-3 Cristy  <quetzlzacatenango@image...>
   * Support -channel sync option for -equalize (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21746).
+  * Don't remove color profile when setting the image colorspace (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21747).
+  * Recognize ICO format in URL (e.g. http://www.google.com/favicon.ico).
+  * Don't define HAVE_BOOLEAN for JPEG under MinGW (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?t=14071).
 
 2012-08-26  6.7.9-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-2, SVN revision 9120.
