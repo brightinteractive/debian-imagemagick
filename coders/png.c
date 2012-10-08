@@ -2012,7 +2012,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     y_resolution;
 
   unsigned char
-    *ping_pixels;
+    *volatile ping_pixels;
 
   ssize_t
     ping_rowbytes,
@@ -7507,7 +7507,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     x;
 
   unsigned char
-    *ping_pixels;
+    *volatile ping_pixels;
 
   volatile int
     image_colors,
