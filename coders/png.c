@@ -1706,7 +1706,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *quantum_info;
 
   unsigned char
-    *png_pixels;
+    * volatile png_pixels;
 
   long
     y;
@@ -6339,7 +6339,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     x;
 
   unsigned char
-    *png_pixels;
+    *volatile png_pixels;
 
   unsigned int
     logging,
