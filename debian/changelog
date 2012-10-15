@@ -1,3 +1,11 @@
+imagemagick (8:6.7.7.10-5) unstable; urgency=high
+
+  * Fix a memory leak: after setjmp used variable need to be volatile.
+    Fix jpeg and png coder.
+  * Fix a memory leak: in webp handling add a forgotten WebPPictureFree
+  
+ -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Mon, 15 Oct 2012 14:00:09 +0200
+
 imagemagick (8:6.7.7.10-4) unstable; urgency=high
 
   * Security Bug fix: "Fails an assertion due to OpenMP related problem",
