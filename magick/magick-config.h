@@ -12,9 +12,7 @@
 /* #undef AUTOTRACE_DELEGATE */
 
 /* Define if coders and filters are to be built as modules. */
-#ifndef MAGICKCORE_BUILD_MODULES
-#define MAGICKCORE_BUILD_MODULES 1
-#endif
+/* #undef BUILD_MODULES */
 
 /* Define if you have the bzip2 library */
 #ifndef MAGICKCORE_BZLIB_DELEGATE
@@ -34,7 +32,7 @@
 
 /* Location of coder modules */
 #ifndef MAGICKCORE_CODER_PATH
-#define MAGICKCORE_CODER_PATH "/usr/local/lib/ImageMagick-6.8.0/modules-Q16/coders/"
+#define MAGICKCORE_CODER_PATH "/usr/lib/ImageMagick-6.8.0/modules-Q16/coders/"
 #endif
 
 /* Subdirectory of lib where coder modules are installed */
@@ -44,7 +42,7 @@
 
 /* Directory where architecture-dependent configuration files live. */
 #ifndef MAGICKCORE_CONFIGURE_PATH
-#define MAGICKCORE_CONFIGURE_PATH "/usr/local/etc/ImageMagick/"
+#define MAGICKCORE_CONFIGURE_PATH "/usr/etc/ImageMagick/"
 #endif
 
 /* Subdirectory of lib where architecture-dependent configuration files live.
@@ -60,7 +58,7 @@
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
-#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick-6.8.0/"
+#define MAGICKCORE_DOCUMENTATION_PATH "/usr/share/doc/ImageMagick-6.8.0/"
 #endif
 
 /* Define if you have Display Postscript */
@@ -71,7 +69,7 @@
 
 /* Directory where executables are installed. */
 #ifndef MAGICKCORE_EXECUTABLE_PATH
-#define MAGICKCORE_EXECUTABLE_PATH "/usr/local/bin/"
+#define MAGICKCORE_EXECUTABLE_PATH "/usr/bin/"
 #endif
 
 /* Define if you have FFTW library */
@@ -81,7 +79,7 @@
 
 /* Location of filter modules */
 #ifndef MAGICKCORE_FILTER_PATH
-#define MAGICKCORE_FILTER_PATH "/usr/local/lib/ImageMagick-6.8.0/modules-Q16/filters/"
+#define MAGICKCORE_FILTER_PATH "/usr/lib/ImageMagick-6.8.0/modules-Q16/filters/"
 #endif
 
 /* Subdirectory of lib where filter modules are installed */
@@ -1076,7 +1074,7 @@
 
 /* Directory where ImageMagick headers live. */
 #ifndef MAGICKCORE_INCLUDE_PATH
-#define MAGICKCORE_INCLUDE_PATH "/usr/local/include/ImageMagick/"
+#define MAGICKCORE_INCLUDE_PATH "/usr/include/ImageMagick/"
 #endif
 
 /* ImageMagick is formally installed under prefix */
@@ -1104,7 +1102,7 @@
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
-#define MAGICKCORE_LIBRARY_PATH "/usr/local/lib/ImageMagick-6.8.0/"
+#define MAGICKCORE_LIBRARY_PATH "/usr/lib/ImageMagick-6.8.0/"
 #endif
 
 /* Subdirectory of lib where ImageMagick architecture dependent files are
@@ -1117,9 +1115,7 @@
 /* #undef LQR_DELEGATE */
 
 /* Define if using libltdl to support dynamically loadable modules */
-#ifndef MAGICKCORE_LTDL_DELEGATE
-#define MAGICKCORE_LTDL_DELEGATE 1
-#endif
+/* #undef LTDL_DELEGATE */
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
@@ -1181,7 +1177,7 @@
 
 /* Define to the full name and version of this package. */
 #ifndef MAGICKCORE_PACKAGE_STRING
-#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.8.0-3"
+#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.8.0-2"
 #endif
 
 /* Define to the one symbol short name of this package. */
@@ -1196,7 +1192,7 @@
 
 /* Define to the version of this package. */
 #ifndef MAGICKCORE_PACKAGE_VERSION
-#define MAGICKCORE_PACKAGE_VERSION "6.8.0-3"
+#define MAGICKCORE_PACKAGE_VERSION "6.8.0-2"
 #endif
 
 /* Define if you have PANGOCAIRO library */
@@ -1251,7 +1247,7 @@
 
 /* Directory where architecture-independent configuration files live. */
 #ifndef MAGICKCORE_SHAREARCH_PATH
-#define MAGICKCORE_SHAREARCH_PATH "/usr/local/lib/ImageMagick-6.8.0/config/"
+#define MAGICKCORE_SHAREARCH_PATH "/usr/lib/ImageMagick-6.8.0/config/"
 #endif
 
 /* Subdirectory of lib where architecture-independent configuration files
@@ -1262,7 +1258,7 @@
 
 /* Directory where architecture-independent configuration files live. */
 #ifndef MAGICKCORE_SHARE_PATH
-#define MAGICKCORE_SHARE_PATH "/usr/local/share/ImageMagick-6.8.0/"
+#define MAGICKCORE_SHARE_PATH "/usr/share/ImageMagick-6.8.0/"
 #endif
 
 /* Subdirectory of lib where architecture-independent configuration files
@@ -1386,7 +1382,7 @@
 
 /* Version number of package */
 #ifndef MAGICKCORE_VERSION
-#define MAGICKCORE_VERSION "6.8.0-3"
+#define MAGICKCORE_VERSION "6.8.0-2"
 #endif
 
 /* Define if you have WEBP library */
