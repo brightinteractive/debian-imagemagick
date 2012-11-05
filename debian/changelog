@@ -1,11 +1,12 @@
 imagemagick (8:6.7.7.10-5) unstable; urgency=high
-
-  * Fix a memory leak: after setjmp used variable need to be volatile.
-    Fix jpeg and png coder.
-  * Fix a memory leak: in webp handling add a forgotten WebPPictureFree
-  * Fix another memory leak in case of corrupted image in magick++ read method.
   
- -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Wed, 24 Oct 2012 12:15:35 +0200
+  * Fix three security bug (Closes: #692367):
+  - Fix a memory leak: after setjmp used variable need to be volatile.
+    Fix jpeg and png coder.
+  - Fix a memory leak: in webp handling add a forgotten WebPPictureFree
+  - Fix another memory leak in case of corrupted image in magick++ read method.
+  
+ -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Mon, 05 Nov 2012 13:55:44 +0100
 
 imagemagick (8:6.7.7.10-4) unstable; urgency=high
 
