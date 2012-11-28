@@ -138,7 +138,7 @@ AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
 # Ensure that make can run correctly
 AM_SANITY_CHECK
 
-AM_INIT_AUTOMAKE([1.12 color-tests foreign parallel-tests silent-rules subdir-objects dist-bzip2 dist-lzip dist-xz dist-zip])
+AM_INIT_AUTOMAKE([1.11 color-tests foreign parallel-tests silent-rules subdir-objects dist-bzip2 dist-lzip dist-xz dist-zip])
 
 # Enable support for silent build rules
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
@@ -892,6 +892,13 @@ AC_C_CHAR_UNSIGNED
 # float_t and double_t are intended to be the the most efficient type
 AC_CHECK_TYPES([float_t], [], [], [[#include <math.h>]])
 AC_CHECK_TYPES([double_t], [], [], [[#include <math.h>]])
+AC_CHECK_SIZEOF([float_t], [],[[#include <math.h>]])
+AC_CHECK_SIZEOF([double_t], [],[[#include <math.h>]])
+
+# get size of float, double and long double for comparaison
+AC_CHECK_SIZEOF([float])
+AC_CHECK_SIZEOF([double])
+AC_CHECK_SIZEOF([long double])
 
 # Obtain size of an 'signed short' and define as SIZEOF_SIGNED_SHORT
 AC_CHECK_SIZEOF(signed short)
