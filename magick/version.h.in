@@ -27,7 +27,7 @@ extern "C" {
 */
 #define MagickPackageName "@PACKAGE_NAME@"
 #define MagickCopyright  "Copyright (C) 1999-2012 ImageMagick Studio LLC"
-#define MagickSVNRevision  "9201"
+#define MagickSVNRevision  "10029"
 #define MagickLibVersion  @PACKAGE_LIB_VERSION@
 #define MagickLibVersionText  "@MAGICK_LIB_VERSION_TEXT@"
 #define MagickLibVersionNumber  @MAGICK_LIB_VERSION_NUMBER@
@@ -70,7 +70,7 @@ extern "C" {
 #define MagickQuantumRange  "4294967295"
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64)
 #define MagickQuantumDepth  "Q64"
-#define MagickQuantumRange  "18446744073709551615"
+#define MagickQuantumRange  "18446744073709551615.0"
 #else
 #define MagickQuantumDepth  "Q?"
 #define MagickQuantumRange  "?"
