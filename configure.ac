@@ -76,7 +76,8 @@ AC_CONFIG_FILES([\
     wand/MagickWand-config \
     wand/MagickWand.pc \
     wand/Wand-config \
-    wand/Wand.pc ])
+    wand/Wand.pc \
+    gnulib/Makefile ])
 
 #
 # Save initial user-tunable values
@@ -263,6 +264,7 @@ AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CC_STDC
+gl_EARLY
 AC_PROG_CPP
 AC_PROG_LD
 AC_SUBST(LD)
@@ -278,6 +280,9 @@ AM_WITH_DMALLOC
 AX_C___ATTRIBUTE__
 AX_GCC_ARCHFLAG([no])
 PKG_PROG_PKG_CONFIG
+
+# finish gnulib 
+gl_INIT
 
 #
 # Enable run-time checking.

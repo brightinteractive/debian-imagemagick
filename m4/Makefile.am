@@ -37,4 +37,6 @@ M4_EXTRA_DIST =  \
 	ltversion.m4  \
 	magick_check_pthread_lib.m4  \
 	magick_func_mmap_fileio.m4  \
-	pkg.m4  
+	pkg.m4 \
+	gnulib-cache.m4
+

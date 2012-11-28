@@ -23,6 +23,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -avoid-version
 
+SUBDIRS = gnulib .
 # Options to pass when running configure in the distcheck target.
 #
 # We want to preserve user-provided option variables so the same
