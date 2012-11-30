@@ -80,7 +80,30 @@ typedef void *ModuleHandle;
 #    define ModuleGlobExpression "IM_MOD_RL_*.dll"
 #  endif
 #endif
+
+#define MAGICK_MODULE_QUOTE(str) #str
+#define MAGICK_MODULE_EXPAND_AND_QUOTE(str) MAGICK_MODULE_QUOTE(str)
+#ifndef MAGICKCORE_CODER_PATH
+# ifdef MAGICKCORE_LIBRARY_PATH
+#  ifdef HDRI_SUPPORT
+#   define MAGICKCORE_CODER_PATH MAGICKCORE_LIBRARY_PATH DirectorySeparator "modules-QHDRI" MAGICK_MODULE_EXPAND_AND_QUOTE(MAGICKCORE_QUANTUM_DEPTH) DirectorySeparator "coders" DirectorySeparator
+#  else
+#   define MAGICKCORE_CODER_PATH MAGICKCORE_LIBRARY_PATH DirectorySeparator "modules-Q"MAGICK_MODULE_EXPAND_AND_QUOTE(MAGICKCORE_QUANTUM_DEPTH) DirectorySeparator "coders" DirectorySeparator
+#  endif
+# endif
+#endif
+#ifndef MAGICKCORE_FILTER_PATH
+# ifdef MAGICKCORE_LIBRARY_PATH
+#  ifdef HDRI_SUPPORT
+#   define MAGICKCORE_FILTER_PATH MAGICKCORE_LIBRARY_PATH DirectorySeparator "modules-QHDRI" MAGICK_MODULE_EXPAND_AND_QUOTE(MAGICKCORE_QUANTUM_DEPTH) DirectorySeparator "filters" DirectorySeparator
+#  else
+#   define MAGICKCORE_FILTER_PATH MAGICKCORE_LIBRARY_PATH DirectorySeparator "modules-Q"MAGICK_MODULE_EXPAND_AND_QUOTE(MAGICKCORE_QUANTUM_DEPTH) DirectorySeparator "filters" DirectorySeparator
+#  endif
+# endif
+#endif
 
+
+
 /*
   Global declarations.
 */

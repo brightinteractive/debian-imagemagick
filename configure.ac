@@ -2994,10 +2994,11 @@ esac
 AC_DEFINE_UNQUOTED(LIBRARY_PATH,"$DEFINE_LIBRARY_PATH",Directory where architecture-dependent files live.)
 AC_SUBST(LIBRARY_PATH)
 
+
 #
 # Subdirectory under lib to place ImageMagick coder module files
 CODER_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/modules-${MAGICK_ABISUFFIX}/coders"
-AC_DEFINE_UNQUOTED(CODER_RELATIVE_PATH,"$CODER_RELATIVE_PATH",Subdirectory of lib where coder modules are installed)
+#AC_DEFINE_UNQUOTED(CODER_RELATIVE_PATH,"$CODER_RELATIVE_PATH",Subdirectory of lib where coder modules are installed)
 CODER_PATH="${LIB_DIR}/${CODER_RELATIVE_PATH}"
 DEFINE_CODER_PATH="${LIB_DIR}/${CODER_RELATIVE_PATH}/"
 case "${build_os}" in
@@ -3005,7 +3006,10 @@ case "${build_os}" in
     DEFINE_CODER_PATH=`$WinPathScript "$DEFINE_CODER_PATH" 1`
     ;;
 esac
+# do not export to configure use cpp trick
+if test "0"  = "1"; then
 AC_DEFINE_UNQUOTED(CODER_PATH,"$DEFINE_CODER_PATH",Location of coder modules)
+fi
 AC_SUBST(CODER_PATH)
 
 #
@@ -3019,7 +3023,10 @@ case "${build_os}" in
     DEFINE_FILTER_PATH=`$WinPathScript "$DEFINE_FILTER_PATH" 1`
     ;;
 esac
+# do not export to configure use cpp trick
+if test "0"  = "1"; then
 AC_DEFINE_UNQUOTED(FILTER_PATH,"$DEFINE_FILTER_PATH",Location of filter modules)
+fi
 AC_SUBST(FILTER_PATH)
 
 #
