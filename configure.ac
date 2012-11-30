@@ -710,6 +710,11 @@ QUANTUM_DEPTH="$with_quantum_depth"
 AC_DEFINE_UNQUOTED(QUANTUM_DEPTH,$QUANTUM_DEPTH,[Number of bits in a pixel Quantum (8/16/32/64)])
 AC_SUBST(QUANTUM_DEPTH)dnl
 
+# define a lib suffix for abi purpose
+MAGICK_ABISUFFIX="Q${MAGICK_HDRI}${QUANTUM_DEPTH}"
+AC_SUBST(MAGICK_ABISUFFIX)
+
+
 # Set pixel cache threshold
 AC_ARG_WITH([cache],
     [AC_HELP_STRING([--with-cache=THRESHOLD],
@@ -2991,7 +2996,7 @@ AC_SUBST(LIBRARY_PATH)
 
 #
 # Subdirectory under lib to place ImageMagick coder module files
-CODER_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/modules-Q${QUANTUM_DEPTH}/coders"
+CODER_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/modules-${MAGICK_ABISUFFIX}/coders"
 AC_DEFINE_UNQUOTED(CODER_RELATIVE_PATH,"$CODER_RELATIVE_PATH",Subdirectory of lib where coder modules are installed)
 CODER_PATH="${LIB_DIR}/${CODER_RELATIVE_PATH}"
 DEFINE_CODER_PATH="${LIB_DIR}/${CODER_RELATIVE_PATH}/"
@@ -3005,7 +3010,7 @@ AC_SUBST(CODER_PATH)
 
 #
 # Subdirectory under lib to place ImageMagick filter module files
-FILTER_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/modules-Q${QUANTUM_DEPTH}/filters"
+FILTER_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/modules-${MAGICK_ABISUFFIX}/filters"
 AC_DEFINE_UNQUOTED(FILTER_RELATIVE_PATH,"$FILTER_RELATIVE_PATH",Subdirectory of lib where filter modules are installed)
 FILTER_PATH="${LIB_DIR}/${FILTER_RELATIVE_PATH}"
 DEFINE_FILTER_PATH="${LIB_DIR}/${FILTER_RELATIVE_PATH}/"
