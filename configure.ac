@@ -58,9 +58,13 @@ AC_CONFIG_FILES([\
     magick/version.h \
     Makefile \
     magick.sh \
-    PerlMagick/Magick.pm \
+    PerlMagick/QUANTUM/QUANTUM.pm \
+    PerlMagick/QUANTUM/typemap \
     PerlMagick/Makefile.PL \
+    PerlMagick/QUANTUM/Makefile.PL \
     PerlMagick/check.sh \
+    PerlMagick/QUANTUM/QUANTUM.xs \
+    PerlMagick/Magick.pm \
     utilities/animate.1 \
     utilities/compare.1 \
     utilities/composite.1 \
@@ -726,6 +730,9 @@ if test "$enable_hdri" = 'yes'; then
   MAGICK_ABI_SUFFIX="Q${QUANTUM_DEPTH}${MAGICK_HDRI}"
 fi
 AC_SUBST(MAGICK_ABI_SUFFIX)
+# define perl package name
+MAGICK_PERL_ABI_NAME="Image::Magick::${MAGICK_ABI_SUFFIX}" 
+AC_SUBST(MAGICK_PERL_ABI_NAME)
 
 # Set pixel cache threshold
 AC_ARG_WITH([cache],

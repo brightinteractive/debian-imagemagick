@@ -22,8 +22,11 @@ perl-sources:
 	  echo "Linking PerlMagick Sources ..." ; \
 	  imagemagick=`(cd $(VPATH) ; pwd)` && \
 	  ( cd $(PERLMAGICK) && \
-	    sh $$imagemagick/config/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
+	    sh $$imagemagick/config/lndir.sh $$imagemagick/$(PERLMAGICK) ; ) \
 	fi ; \
+	(cd $(PERLMAGICK)/QUANTUM && \
+	    cp QUANTUM.xs @MAGICK_ABI_SUFFIX@.xs && \
+	    cp QUANTUM.pm @MAGICK_ABI_SUFFIX@.pm);
 	touch perl-sources
 
 if WITH_PERL
@@ -110,7 +113,10 @@ clean-perl:
 	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
 	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
 	rm -f Makefile.old PerlMagick ; \
-	rm -f t/output* t/jng/*_tmp.jng t/*/output* )
+	rm -f t/output* t/jng/*_tmp.jng t/*/output* ; \
+	rm -f QUANTUM/@MAGICK_ABI_SUFFIX@.xs;\
+	rm -f QUANTUM/@MAGICK_ABI_SUFFIX@.pm;\
+	rm -f Magick.pm;)
 	rm -f perl-sources
 
 distclean-perl: clean-perl
