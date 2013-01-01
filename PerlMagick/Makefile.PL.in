@@ -244,6 +244,9 @@ WriteMakefile
    test	=> { TESTS	=>	$delegate_tests},
 
    ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
+
+   # sane version
+   depend => { '$(FIRST_MAKEFILE)' => '$(VERSION_FROM)' }
 );
 
 
