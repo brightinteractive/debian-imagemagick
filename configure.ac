@@ -59,8 +59,9 @@ AC_CONFIG_FILES([\
     Makefile \
     magick.sh \
     PerlMagick/check.sh \
-    PerlMagick/Magick.pm \
+    PerlMagick/default/Magick.pm \
     PerlMagick/Makefile.PL \
+    PerlMagick/default/Makefile.PL \
     PerlMagick/quantum/Makefile.PL \
     PerlMagick/quantum/quantum.pm \
     PerlMagick/quantum/quantum.xs \
