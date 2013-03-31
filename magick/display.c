@@ -92,6 +92,8 @@
 #include "magick/version.h"
 #include "magick/widget.h"
 #include "magick/xwindow-private.h"
+#include "xstubs.h"
+
 
 #if defined(MAGICKCORE_X11_DELEGATE)
 /*
@@ -1630,7 +1632,7 @@ static void
 %    o image: the image.
 %
 */
-MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
+MagickExport MagickBooleanType DisplayImages_WITHX(const ImageInfo *image_info,
   Image *images)
 {
   char
@@ -1725,7 +1727,7 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType RemoteDisplayCommand(const ImageInfo *image_info,
+MagickExport MagickBooleanType RemoteDisplayCommand_WITHX(const ImageInfo *image_info,
   const char *window,const char *filename,ExceptionInfo *exception)
 {
   Display
@@ -16026,90 +16028,5 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   *image=display_image;
   return(nexus);
 }
-#else
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   D i s p l a y I m a g e s                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DisplayImages() displays an image sequence to any X window screen.  It
-%  returns a value other than 0 if successful.  Check the exception member
-%  of image to determine the reason for any failure.
-%
-%  The format of the DisplayImages method is:
-%
-%      MagickBooleanType DisplayImages(const ImageInfo *image_info,
-%        Image *images)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: the image info.
-%
-%    o image: the image.
-%
-*/
-MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
-  Image *image)
-{
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  (void) ThrowMagickException(&image->exception,GetMagickModule(),
-    MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (X11)",
-    image->filename);
-  return(MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e m o t e D i s p l a y C o m m a n d                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  RemoteDisplayCommand() encourages a remote display program to display the
-%  specified image filename.
-%
-%  The format of the RemoteDisplayCommand method is:
-%
-%      MagickBooleanType RemoteDisplayCommand(const ImageInfo *image,
-%        const char *window,const char *filename,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: the image info.
-%
-%    o window: Specifies the name or id of an X window.
-%
-%    o filename: the name of the image filename to display.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType RemoteDisplayCommand(const ImageInfo *image_info,
-  const char *window,const char *filename,ExceptionInfo *exception)
-{
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(filename != (char *) NULL);
-  (void) window;
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
-  (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
-    "DelegateLibrarySupportNotBuiltIn","`%s' (X11)",image_info->filename);
-  return(MagickFalse);
-}
 #endif
+

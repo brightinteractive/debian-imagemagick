@@ -18,17 +18,6 @@
 #ifndef _MAGICKCORE_DISPLAY_H
 #define _MAGICKCORE_DISPLAY_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-extern MagickExport MagickBooleanType
-  DisplayImages(const ImageInfo *,Image *),
-  RemoteDisplayCommand(const ImageInfo *,const char *,const char *,
-    ExceptionInfo *);
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
+#include "xstubs.h"
 
 #endif

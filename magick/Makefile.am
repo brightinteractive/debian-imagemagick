@@ -282,7 +282,8 @@ MAGICK_BASE_SRCS = \
 	magick/xml-tree.h
 
 # Xwindows source
-MAGICK_X_SRCS = magick/animate.c \
+MAGICK_X_SRCS = magick/annotatex.c \
+		magick/animate.c \
 		magick/animate.h \
 		magick/animate-private.h \
 		magick/display.c \
@@ -292,6 +293,8 @@ MAGICK_X_SRCS = magick/animate.c \
 		magick/PreRvIcccm.h \
 		magick/widget.c \
 		magick/widget.h \
+		magick/xstubs.c \
+		magick/xstubs.h \
 		magick/xwindow.c \
 		magick/xwindow.h
 
@@ -407,6 +410,7 @@ MAGICK_X_HDRS = magick/PreRvIcccm.h \
 		magick/animate.h \
 		magick/display.h \
 		magick/widget.h \
+		magick/xstubs.h \
 		magick/xwindow.h
 
 MAGICK_NOINST_HDRS = \

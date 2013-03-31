@@ -97,7 +97,6 @@
 #include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/version.h"
-#include "magick/xwindow-private.h"
 
 /*
   Constant declaration.

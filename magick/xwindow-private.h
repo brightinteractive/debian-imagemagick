@@ -519,7 +519,6 @@ extern MagickExport int
 
 extern MagickExport MagickBooleanType
   XAnnotateImage(Display *,const XPixelInfo *,XAnnotateInfo *,Image *),
-  XComponentGenesis(void),
   XDrawImage(Display *,const XPixelInfo *,XDrawInfo *,Image *),
   XGetWindowColor(Display *,XWindows *,char *),
   XMagickProgressMonitor(const char *,const MagickOffsetType,
@@ -535,7 +534,6 @@ extern MagickExport void
   XBestPixel(Display *,const Colormap,XColor *,unsigned int,XColor *),
   XCheckRefreshWindows(Display *,XWindows *),
   XClientMessage(Display *,const Window,const Atom,const Atom,const Time),
-  XComponentTerminus(void),
   XConfigureImageColormap(Display *,XResourceInfo *,XWindows *,Image *),
   XConstrainWindowPosition(Display *,XWindowInfo *),
   XDelay(Display *,const size_t),
@@ -596,16 +594,7 @@ static inline MagickRealType XPixelIntensity(const XColor *pixel)
   intensity=0.298839f*pixel->red+0.586811f*pixel->green+0.114350f*pixel->blue;
   return(intensity);
 }
-#else /* (! MAGICKCORE_X11_DELEGATE) */
-/* dummy stub for XComponentTerminus(void) */
-static inline void XComponentTerminus(void)
-{
-}
-static inline MagickBooleanType XComponentGenesis(void)
-{
-  return(MagickTrue);
-}
-#endif
+#endif /* MAGICKCORE_X11_DELEGATE */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

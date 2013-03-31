@@ -78,7 +78,7 @@
 #include "magick/thread-private.h"
 #include "magick/token.h"
 #include "magick/utility.h"
-#include "magick/xwindow-private.h"
+#include "magick/xstubs.h"
 
 /*
   Define declarations.

@@ -80,6 +80,7 @@
 #include "magick/xwindow.h"
 #include "magick/xwindow-private.h"
 #include "magick/version.h"
+#include "magick/xstubs.h"
 #if defined(__BEOS__)
 #include <OS.h>
 #endif
@@ -1647,7 +1648,7 @@ static Window XClientWindow(Display *display,Window target_window)
 %      XComponentTerminus(void)
 %
 */
-MagickExport void XComponentTerminus(void)
+MagickExport void XComponentTerminus_WITHX(void)
 {
   DestroyXResources();
 }
@@ -9686,7 +9687,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
 %      MagickBooleanType XComponentGenesis(void)
 %
 */
-MagickExport MagickBooleanType XComponentGenesis(void)
+MagickExport MagickBooleanType XComponentGenesis_WITHX(void)
 {
   return(MagickTrue);
 }
