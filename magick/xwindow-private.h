@@ -596,7 +596,15 @@ static inline MagickRealType XPixelIntensity(const XColor *pixel)
   intensity=0.298839f*pixel->red+0.586811f*pixel->green+0.114350f*pixel->blue;
   return(intensity);
 }
-
+#else /* (! MAGICKCORE_X11_DELEGATE) */
+/* dummy stub for XComponentTerminus(void) */
+static inline void XComponentTerminus(void)
+{
+}
+static inline MagickBooleanType XComponentGenesis(void)
+{
+  return(MagickTrue);
+}
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
