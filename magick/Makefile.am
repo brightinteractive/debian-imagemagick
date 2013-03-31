@@ -20,7 +20,7 @@ magickincarchdir = $(INCLUDEARCH_PATH)/magick
 
 # Headers which are installed
 magickinc_HEADERS = \
-	$(MAGICK_INCLUDE_HDRS)
+	$(MAGICK_INCLUDE_HDRS) $(MAGICK_X_HDRS)
 magickincarch_HEADERS = \
 	$(MAGICK_INCLUDEARCH_HDRS)
 
@@ -41,14 +41,16 @@ MAGICK_MANS = \
   magick/MagickCore-config.1
 
 MAGICKCORE_LIBS = magick/libMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.la
+MAGICKCOREX_LIBS = magick/libMagickCoreX-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.la
+noinst_LTLIBRARIES += $(MAGICKCOREX_LIBS)
 
-if WITH_MODULES
 magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)
+if WITH_MODULES
+magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES += 
 else
-magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS) $(MAGICK_CODER_SRCS) $(MAGICK_FILTER_SRCS)
-magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)
+magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES += $(MAGICK_CODER_SRCS) $(MAGICK_FILTER_SRCS)
 endif # WITH_MODULES
+magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS) $(MAGICKCOREX_LIBS)
 magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
 
 if HAVE_LD_VERSION_SCRIPT
@@ -63,15 +65,15 @@ magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS = -no
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 magick_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_DEPENDENCIES =
 
+# add X part
+magick_libMagickCoreX_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICK_X_SRCS)
+
 # Library base sources
 MAGICK_BASE_SRCS = \
 	magick/ImageMagick.h \
 	magick/MagickCore.h \
 	magick/accelerate.c \
 	magick/accelerate.h \
-	magick/animate.c \
-	magick/animate.h \
-	magick/animate-private.h \
 	magick/annotate.c \
 	magick/annotate.h \
 	magick/api.h \
@@ -125,9 +127,6 @@ MAGICK_BASE_SRCS = \
 	magick/delegate-private.h \
 	magick/deprecate.c \
 	magick/deprecate.h \
-	magick/display.c \
-	magick/display.h \
-	magick/display-private.h \
 	magick/distort.c \
 	magick/distort.h \
 	magick/draw.c \
@@ -209,8 +208,6 @@ MAGICK_BASE_SRCS = \
 	magick/pixel-private.h \
 	magick/policy.c \
 	magick/policy.h \
-	magick/PreRvIcccm.c \
-	magick/PreRvIcccm.h \
 	magick/prepress.c \
 	magick/prepress.h \
 	magick/property.c \
@@ -281,12 +278,22 @@ MAGICK_BASE_SRCS = \
 	magick/version.h \
 	magick/version-private.h \
 	magick/vms.h \
-	magick/widget.c \
-	magick/widget.h \
 	magick/xml-tree.c \
-	magick/xml-tree.h \
-	magick/xwindow.c \
-	magick/xwindow.h 
+	magick/xml-tree.h
+
+# Xwindows source
+MAGICK_X_SRCS = magick/animate.c \
+		magick/animate.h \
+		magick/animate-private.h \
+		magick/display.c \
+		magick/display.h \
+		magick/display-private.h \
+		magick/PreRvIcccm.c \
+		magick/PreRvIcccm.h \
+		magick/widget.c \
+		magick/widget.h \
+		magick/xwindow.c \
+		magick/xwindow.h
 
 if WIN32_NATIVE_BUILD
 MAGICK_PLATFORM_SRCS = \
@@ -307,9 +314,7 @@ endif # if WIN32_NATIVE_BUILD
 MAGICK_INCLUDE_HDRS = \
 	magick/ImageMagick.h \
 	magick/MagickCore.h \
-	magick/PreRvIcccm.h \
 	magick/accelerate.h \
-	magick/animate.h \
 	magick/annotate.h \
 	magick/api.h \
 	magick/artifact.h \
@@ -332,7 +337,6 @@ MAGICK_INCLUDE_HDRS = \
 	magick/decorate.h \
 	magick/delegate.h \
 	magick/deprecate.h \
-	magick/display.h \
 	magick/distribute-cache.h \
 	magick/distort.h \
 	magick/draw.h \
@@ -396,9 +400,14 @@ MAGICK_INCLUDE_HDRS = \
 	magick/type.h \
 	magick/utility.h \
 	magick/version.h \
-	magick/widget.h \
-	magick/xml-tree.h \
-	magick/xwindow.h
+	magick/xml-tree.h
+
+# Xheaders always safe to be included but could be empty
+MAGICK_X_HDRS = magick/PreRvIcccm.h \
+		magick/animate.h \
+		magick/display.h \
+		magick/widget.h \
+		magick/xwindow.h
 
 MAGICK_NOINST_HDRS = \
 	magick/animate-private.h \
