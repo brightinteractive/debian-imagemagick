@@ -61,8 +61,6 @@
 #include "magick/string-private.h"
 #include "magick/module.h"
 #include "magick/utility.h"
-#include "magick/xwindow.h"
-#include "magick/xwindow-private.h"
 #if defined(MAGICKCORE_WEBP_DELEGATE)
 #include <webp/decode.h>
 #include <webp/encode.h>

@@ -58,8 +58,6 @@
 #include "magick/string_.h"
 #include "magick/module.h"
 #include "magick/utility.h"
-#include "magick/xwindow.h"
-#include "magick/xwindow-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -61,7 +61,6 @@
 #include "magick/string_.h"
 #include "magick/module.h"
 #include "magick/utility.h"
-#include "magick/xwindow-private.h"
 #if defined(MAGICKCORE_GVC_DELEGATE)
 #undef HAVE_CONFIG_H
 #include <gvc.h>
