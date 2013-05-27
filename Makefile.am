@@ -277,9 +277,10 @@ libtool: $(LIBTOOL_DEPS)
 
 # Format C API documentation
 html:
-	doxygen config/MagickCore.dox
-	doxygen config/MagickWand.dox
-	doxygen config/Magick++.dox
+	$(MKDIR_P) -p $(top_builddir)/www/api
+	cd config && doxygen MagickCore.dox
+	cd config && doxygen MagickWand.dox
+	cd config && doxygen Magick++.dox
 
 #
 # Build Windows source Zip and 7Zip balls
