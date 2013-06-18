@@ -1845,7 +1845,7 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image)
         register unsigned char
           *p;
 
-        tag_length=14;
+        tag_length=strlen(ICC_PROFILE);
         p=GetStringInfoDatum(custom_profile);
         (void) CopyMagickMemory(p,ICC_PROFILE,tag_length);
         for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65519L)
@@ -1991,6 +1991,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     error_manager;
 
   int
+    colorspace,
     quality;
 
   JSAMPLE
@@ -2299,16 +2300,25 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         }
     }
 #endif
-  sampling_factor=(const char *) NULL;
-  value=GetImageOption(image_info,"jpeg:sampling-factor");
+  colorspace=jpeg_info.in_color_space;
+  value=GetImageOption(image_info,"jpeg:colorspace");
   if (value == (char *) NULL)
-    value=GetImageProperty(image,"jpeg:sampling-factor");
+    value=GetImageProperty(image,"jpeg:colorspace");
   if (value != (char *) NULL)
+    colorspace=StringToInteger(value);
+  sampling_factor=(const char *) NULL;
+  if (colorspace == jpeg_info.in_color_space)
     {
-      sampling_factor=value;
-      if (image->debug != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "  Input sampling-factors=%s",sampling_factor);
+      value=GetImageOption(image_info,"jpeg:sampling-factor");
+      if (value == (char *) NULL)
+        value=GetImageProperty(image,"jpeg:sampling-factor");
+      if (value != (char *) NULL)
+        {
+          sampling_factor=value;
+          if (image->debug != MagickFalse)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  Input sampling-factors=%s",sampling_factor);
+        }
     }
   if (image_info->sampling_factor != (char *) NULL)
     sampling_factor=image_info->sampling_factor;
@@ -2357,12 +2367,6 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         jpeg_info.comp_info[i].h_samp_factor=1;
         jpeg_info.comp_info[i].v_samp_factor=1;
       }
-    }
-  if (jpeg_info.input_components == 1)
-    for (i=0; i < MAX_COMPONENTS; i++)
-    {
-      jpeg_info.comp_info[i].h_samp_factor=1;
-      jpeg_info.comp_info[i].v_samp_factor=1;
     }
   option=GetImageOption(image_info,"jpeg:q-table");
   if (option != (const char *) NULL)

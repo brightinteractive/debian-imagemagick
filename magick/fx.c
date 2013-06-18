@@ -1366,7 +1366,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
           if (*p == '.')
             p++;
         }
-      if ((isalpha((int) *(p+1)) == 0) && (*p == 'p'))
+      if ((*p == 'p') && (isalpha((int) *(p+1)) == 0))
         {
           p++;
           if (*p == '{')
@@ -4487,8 +4487,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   random_image=DestroyImage(random_image);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
-  dodge_image=EdgeImage(blur_image,GetOptimalKernelWidth1D(radius,0.5),
-    exception);
+  dodge_image=EdgeImage(blur_image,radius,exception);
   blur_image=DestroyImage(blur_image);
   if (dodge_image == (Image *) NULL)
     return((Image *) NULL);
@@ -5314,8 +5313,8 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
         (weight*weight)));
       SetPixelRed(q,ClampToQuantum(pixel.red));
       weight=QuantumScale*GetPixelGreen(p)-0.5;
-      pixel.green=(MagickRealType) GetPixelGreen(p)+color_vector.green*(1.0-(4.0*
-        (weight*weight)));
+      pixel.green=(MagickRealType) GetPixelGreen(p)+color_vector.green*(1.0-
+        (4.0*(weight*weight)));
       SetPixelGreen(q,ClampToQuantum(pixel.green));
       weight=QuantumScale*GetPixelBlue(p)-0.5;
       pixel.blue=(MagickRealType) GetPixelBlue(p)+color_vector.blue*(1.0-(4.0*
