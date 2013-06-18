@@ -1,3 +1,13 @@
+imagemagick (8:6.8.6.0-1) experimental; urgency=low
+
+  * New upstream version.
+  * Really display log file in case of failure.
+  * Bug fix: "Imagemagick 6.7.7 changes contrast of b/w images without
+    reason", thanks to Markus Schmidt (Closes: #712493).
+  * Drop forwarded upstream patches.
+
+ -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Tue, 18 Jun 2013 11:25:01 +0200
+
 imagemagick (8:6.8.5.6-3) experimental; urgency=low
 
   * Fix symbols files.
@@ -5,7 +15,7 @@ imagemagick (8:6.8.5.6-3) experimental; urgency=low
   * Use silent rules
   * Bug fix: "version in experimental causes FTBFS for packages using
     libmagick*", thanks to Roderich Schupp (Closes: #710668).
-  * Display log in case of tests faillure.
+  * Display log in case of tests failure.
 
  -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Sat, 15 Jun 2013 16:38:51 +0200
 
