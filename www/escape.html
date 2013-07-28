@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html version="-//W3C//DTD XHTML 1.1//EN"
@@ -63,7 +62,7 @@
 
 <body id="www-imagemagick-org">
 
-<script>
+<script type="text/javascript">
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -239,13 +238,13 @@ example in <a href="command-line-options.html#format_identify_"
 >-label</a>, to print various properties and other settings associated with an
 image. </p>
 
-<p><table>
-<tr valign=top>
-    <td><b>Profile&nbsp;Data</b></td>
+<table>
+<tr valign="top">
+    <td><b>Profile Data</b></td>
     <td>Such as EXIF: data, containing focal lengths, exposures, dates, and in
         come cases GPS locations.
     </td></tr>
-<tr valign=top>
+<tr valign="top">
     <td><b>Attributes</b></td>
     <td>These are directly involved with image data, and more commonly
         modified as part of normal image processing.  These include
@@ -253,26 +252,26 @@ image. </p>
         background color. Most specific percent escapes is to access this
         information.
     </td></tr>
-<tr valign=top>
+<tr valign="top">
     <td><b>Properties</b></td>
     <td>These are stored as a table of free form strings, and are (if posible)
         saved with the image (especially in MIFF and PNG image file formats).
         These include: Labels, Captions, Comments.
     </td></tr>
-<tr valign=top>
+<tr valign="top">
     <td><b>Artifacts</b></td>
     <td>These are various operational (expert) settings that are saved for
         use by various operators, or by the user for future use.  It is just
         a table of free-form strings.  They are not saved with the image when
         written.  See Artifacts and Options below for details.
     </td></tr>
-<tr valign=top>
+<tr valign="top">
     <td><b>Options</b></td>
     <td>Also operational (expert) settings that are saved for
         use by various operators, but are set globally for use by a whole
         image list (also not saved).  See Artifacts and Options below.
     </td></tr>
-</table></p>
+</table>
 
 <h3>Percent Escape Handling</h3>
 
@@ -280,7 +279,7 @@ image. </p>
 is looked for in the following order until the first match has been
 found...</p>
 
-<p><ol>
+<ol>
 <li>Handle special prefixes such as 'artifact:' 'option:' 'exif:', or
     'fx:'.  This includes and calculations and or globs of those prefixes such
     as 'exif:*' or 'artifact:*' (see below).</li>
@@ -296,7 +295,7 @@ found...</p>
 <li>Search for setting as a free-form 'option'</li>
 
 <li>Replace escape with empty string, and perhaps produce a warning.</li>
-</ol></p>
+</ol>
 
 <p>Remember, all long name forms of percent escapes are handled in a is case
 insensitive manner. </p>
@@ -435,11 +434,12 @@ CLI option (or API equivelent), or from special convenience options
 >-comment</a>, <a href="command-line-options.html#caption"
 >-caption</a>). </p>
 
+<p>
 These convenience options are globally saved (as 'global options' so thay can
 be set before images are read), and later are transfered to the property of
 individual images, only when they are read in. At that time any internal
 percent escape present is then handled. </p>
-
+<p>
 To change a property of an image already in memory, you need to use <a
 href="command-line-options.html#set" >-set</a>.
 </p>
@@ -457,7 +457,7 @@ Properties. Which is the original and primary focus of such percent escapes.
 <p>However there are many operational settings that are used by various
 ImageMagick operators that can be useful to set and later access.  These
 consist of per-image Artifacts, and Global options (associated with a list of
-images, typically the current image list).
+images, typically the current image list).</p>
 
 <p>Note that the major difference between an artifact and a property is that
 artifacts, being an internal operational setting, is not saved with images (if
@@ -485,7 +485,7 @@ Global Options. As such, continuing the previous example, the
 a 'viewport' has been provided to it. </p>
 
 <p>How Global Options are used when a library function requests an Artifact is
-one of the key differences between IMv6 and IMv7.
+one of the key differences between IMv6 and IMv7.</p>
 
 <p>In <b>ImageMagick version 6</b>... before each operator, any global Options
 are copied to per-image Artifacts, for every image in the current image list.
@@ -531,6 +531,7 @@ used for image processing use. </p>
 
 <h3>Calculated Percent Escape Prefixes</h3>
 
+<p>
 There are some special prefixes (before the first ':') which performs
 calculations based on the user provided string that follows that prefix.  For
 example you can do a numerical calculation use <code>%[fx:...]</code> to
@@ -753,17 +754,17 @@ the following:</p>
 </div>
 
 <div id="linkbar">
-    <span id="linkbar-west">&nbsp;</span>
+    <span id="linkbar-west"> </span>
 
     <span id="linkbar-center">
-      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &bull;
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> •
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
       <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
     </span>
-    <span id="linkbar-east">&nbsp;</span>
+    <span id="linkbar-east"> </span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2013 ImageMagick Studio LLC</span>
+    <span id="footer-west">© 1999-2013 ImageMagick Studio LLC</span>
     <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>

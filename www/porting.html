@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html version="-//W3C//DTD XHTML 1.1//EN"
@@ -63,7 +62,7 @@
 
 <body id="www-imagemagick-org">
 
-<script>
+<script type="text/javascript">
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -225,7 +224,7 @@
 
 <h1>ImageMagick Version 7 Porting Guide</h1>
 
-<p class="navigation-index">[<a href="porting.html#imv7">ImageMagick Version 7</a> &bull; <a href="porting.html#hdri">High Dynamic Range Imaging</a> &bull; <a href="porting.html#channels">Pixel Channels</a> &bull; <a href="porting.html#alpha">Alpha</a> &bull; <a href="porting.html#grayscale">Grayscale</a> &bull; <a href="porting.html#mask">Masks</a> &bull; <a href="porting.html#core">MagickCore API</a> &bull; <a href="porting.html#headers">Header Files</a>  &bull; <a href="porting.html#deprecate">Deprecated Features Removed</a> &bull; <a href="porting.html#cli">Command-line Interface</a> &bull; <a href="porting.html#summary">Version 7 Change Summary</a> ]</p>
+<p class="navigation-index">[<a href="porting.html#imv7">ImageMagick Version 7</a> • <a href="porting.html#hdri">High Dynamic Range Imaging</a> • <a href="porting.html#channels">Pixel Channels</a> • <a href="porting.html#alpha">Alpha</a> • <a href="porting.html#grayscale">Grayscale</a> • <a href="porting.html#mask">Masks</a> • <a href="porting.html#core">MagickCore API</a> • <a href="porting.html#headers">Header Files</a>  • <a href="porting.html#deprecate">Deprecated Features Removed</a> • <a href="porting.html#cli">Command-line Interface</a> • <a href="porting.html#summary">Version 7 Change Summary</a> ]</p>
 
 <h2><a id="imv7"></a>ImageMagick Version 7</h2>
 <div class="doc-section">
@@ -245,7 +244,7 @@ better reporting of which option failed, the consolidation and deprecation of
 options, and more global use of 'image properities' (more commonly known as
 'percent escapes' in option arguments. </p>
 
-<p>ImageMagick version 7 is available now as an <a href="http://www.imagemagick.org/download/alpha/">Alpha</a> release.  Look for a Beta release around mid-April 2013.  An official ImageMagick version 7 release depends on how smoothly the Beta cycle progresses.  During the Beta cycle, version 6 developers can attempt to port their software to version 7.<p>
+<p>ImageMagick version 7 is available now as an <a href="http://www.imagemagick.org/download/alpha/">Alpha</a> release.  Look for a Beta release around mid-April 2013.  An official ImageMagick version 7 release depends on how smoothly the Beta cycle progresses.  During the Beta cycle, version 6 developers can attempt to port their software to version 7.</p>
 
 <p>During the ImageMagick version 7 development cycle and release, we will continue to support and enhance version 6 for a minimum of 10 years.</p>
 </div>
@@ -277,13 +276,13 @@ options, and more global use of 'image properities' (more commonly known as
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x &lt; (ssize_t) image->columns; x++)
     {
-      if ((channel & RedChannel) != 0)
+      if ((channel &amp; RedChannel) != 0)
         q->red=(Quantum) QuantumRange-q->red;
-      if ((channel & GreenChannel) != 0)
+      if ((channel &amp; GreenChannel) != 0)
         q->green=(Quantum) QuantumRange-q->green;
-      if ((channel & BlueChannel) != 0)
+      if ((channel &amp; BlueChannel) != 0)
         q->blue=(Quantum) QuantumRange-q->blue;
-      if (((channel & IndexChannel) != 0) &&
+      if (((channel &amp; IndexChannel) != 0) &amp;&amp;
           (image->colorspace == CMYKColorspace))
         indexes[x]=(IndexPacket) QuantumRange-indexes[x];
       q++;
@@ -309,15 +308,15 @@ options, and more global use of 'image properities' (more commonly known as
       }
     for (x=0; x &lt; (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelRedTraits(image) &amp; UpdatePixelTrait) != 0)
         SetPixelRed(image,QuantumRange-GetPixelRed(image,q),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelGreenTraits(image) &amp; UpdatePixelTrait) != 0)
         SetPixelGreen(image,QuantumRange-GetPixelGreen(image,q),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelBlueTraits(image) &amp; UpdatePixelTrait) != 0)
         SetPixelBlue(image,QuantumRange-GetPixelBlue(image,q),q);
-      if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelBlackTraits(image) &amp; UpdatePixelTrait) != 0)
         SetPixelBlack(image,QuantumRange-GetPixelBlack(image,q),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+      if ((GetPixelAlphaTraits(image) &amp; UpdatePixelTrait) != 0)
         SetPixelAlpha(image,QuantumRange-GetPixelAlpha(image,q),q);
       q+=GetPixelChannels(image);
     }
@@ -363,7 +362,7 @@ options, and more global use of 'image properities' (more commonly known as
 
 <p>The colormap indexes and black pixel channel (for the CMYK colorspace) are no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue().  Instead they are now a pixel channel and accessed with the convenience pixel accessor methods GetPixelIndex(), SetPixelIndex(), GetPixelBlack(), and SetPixelBlack().</p>
 
-<h4></a>Pixel Accessors</h4>
+<h4>Pixel Accessors</h4>
 <p>Use accessors to get or set pixel channels:</p>
 
 <pre class="text">
@@ -391,17 +390,17 @@ options, and more global use of 'image properities' (more commonly known as
 
 <p>You can find these accessors defined in the header file, <code>MagickCore/pixel-accessor.h</code></p>
 
-<h4></a>Pixel Traits</h4>
+<h4>Pixel Traits</h4>
 <p>Each pixel channel includes one or more of these traits:</p>
 <dl>
 <dt>Undefined</dt>
-<dd>no traits associated with this pixel channel<dd>
+<dd>no traits associated with this pixel channel</dd>
 <dt>Copy</dt>
-<dd>do not update this pixel channel, just copy it<dd>
+<dd>do not update this pixel channel, just copy it</dd>
 <dt>Update</dt>
-<dd>update this pixel channel<dd>
+<dd>update this pixel channel</dd>
 <dt>Blend</dt>
-<dd>blend this pixel channel with the alpha mask if it's enabled<dd>
+<dd>blend this pixel channel with the alpha mask if it's enabled</dd>
 </dl>
 <p>We provide these methods to set and get pixel traits:</p>
 <pre class="text">
@@ -437,9 +436,9 @@ options, and more global use of 'image properities' (more commonly known as
   (void) SetPixelChannelMap(image,channel_mask);
 </pre>
 
-<h4></a>Pixel User Channels</h4>
+<h4>Pixel User Channels</h4>
 <p>In version 7, we introduce pixel user channels.  Traditionally we utilize 4 channels, red, green, blue, and alpha.   For CMYK we also have a black channel.  User channels are designed to contain whatever additional channel information that makes sense for your application.  Some examples include extra channels in TIFF or PSD images or perhaps you require a channel with infrared information for the pixel.  You can associate traits with the user channels so that they when they are acted upon by an image processing algorithm (e.g. blur) the pixels are copied, acted upon by the algorithm, or even blended with the alpha channel if that makes sense.</p>
-<h4></a>Pixel Metacontent</h4>
+<h4>Pixel Metacontent</h4>
 <p>In version 7, we introduce pixel metacontent.  Metacontent is content about content. So rather than being the content itself, it's something that describes or is associated with the content.  Here the content is a pixel.  The pixel metacontent is for your exclusive use and is accessed with these MagickCore API methods:</p>
 <pre class="text">
   SetImageMetacontentExtent()
@@ -462,7 +461,7 @@ options, and more global use of 'image properities' (more commonly known as
 
 <h2><a id="mask"></a>Masks</h2>
 <div class="doc-section">
-<p>Version 7 supports masks for most image operators.  As an example, here are two methods to compute the statistics of any pixel selected by the image mask:</>
+<p>Version 7 supports masks for most image operators.  As an example, here are two methods to compute the statistics of any pixel selected by the image mask:</p>
 <pre class="text">
 identify -verbose -clip r statue.tif
 identify -verbose -mask r mask.png statue.tif
@@ -586,7 +585,7 @@ scripts.</p>
     "image_info" structure).  This is automatically done with parenthesis (EG:
     '<code>(</code>' and '<code>)</code>') is "<code>-regard-parenthesis</code>" has
     been set, just as in IMv6.  Caution is advised to prevent un-balanced
-    braces errors.</dd> </dd>
+    braces errors.</dd> 
 
 <dt>--</dt>
 <dd>End of options, to be used in IMv7 "<code>mogrify</code>" command to
@@ -710,7 +709,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 
 <dl>
 <dt>-affinity</dt>
-<dd>Replaced by <dd>-affinity</code>.</dd>
+<dd>Replaced by <code>-affinity</code>.</dd>
 <dt>-maximum</dt>
 <dd>Replaced by <code>-evaluate-sequence Max</code>.</dd>
 <dt>-median</dt>
@@ -718,7 +717,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 <dt>-minimum</dt>
 <dd>Replaced by <code>-evaluate-sequence Min</code>.</dd>
 <dt>-recolor</dt>
-<dd>Replaced by <dd>-color-matrix</code>.</dd>
+<dd>Replaced by <code>-color-matrix</code>.</dd>
 </dl>
 
 <h3>Removed / Replaced Options ("no such option" error and abort)</h3>
@@ -727,7 +726,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 <dt>-origin</dt>
 <dd>old option, unknown meaning.</dd>
 <dt>-pen</dt>
-<dd>Replaced by <dd>-fill</code>.</dd>
+<dd>Replaced by <code>-fill</code>.</dd>
 <dt>-passphrase</dt>
 <dd>old option, unknown meaning</dd>
 </dl>
@@ -735,11 +734,11 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 <div class="doc-section">
 <p>Changes from ImageMagick version 6 to version 7 are summarized here:</p>
 <h4>High Dynamic Range Imaging</h4>
-<dl>
+<ul>
 <li>ImageMagick version 7 enables HDRI by default.  Expect more accurate image processing results with higher memory requirement and possible slower processing times.</li>
-</dl>
+</ul>
 <h4>Pixels</h4>
-<dl>
+<ul>
 <li>Pixels are no longer addressed with PixelPacket structure members (e.g. red, green, blue, opacity) but as an array of channels (e.g. pixel[PixelRedChannel]).</li>
 <li>Use convenience macros to access pixel channels (e.g. GetPixelRed(), SetPixelRed()).</li>
 <li>The black channel for the CMYK colorspace is no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue().  Instead it is now a pixel channel and accessed with the convenience pixel macros GetPixelBlack() and SetPixelBlack().</li>
@@ -747,54 +746,55 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 <li>Use GetPixelChannels() to advance to the next set of pixel channels.</li>
 <li>Use the <em>metacontent</em> channel  to associate metacontent with each pixel.</li>
 <li>All color packet structures, PixelPacket, LongPacket, and DoublePacket, are consolidated to a single color structure, PixelInfo.</li>
-</dl>
+</ul>
 <h4>Alpha</h4>
-<dl>
+<ul>
 <li>We support alpha rather than opacity (0 transparent; QuantumRange opaque).</li>
 <li>Use GetPixelAlpha() or SetPixelAlpha() to get or set the alpha pixel channel value.</li>
-</dl>
+</ul>
 <h4>Grayscale</h4>
-<dl>
+<ul>
 <li>Grayscale images consume one pixel channel in ImageMagick version 7.  To process RGB, set the colorspace to RGB (e.g. -colorspace rgb).</li>
-</dl>
+</ul>
 <h4>Distributed Pixel Cache</h4>
-<dl>
+<ul>
 <li><a href="distribute-pixel-cache.html">Distributed pixel cache</a>: offload intermediate pixel storage to one or more remote servers.</li>
-</dl>
+</ul>
 <h4>MagickCore API</h4>
-<dl>
+<ul>
 <li>Almost all image processing algorithms are now channel aware.</li>
 <li>MagickCore, version 7, adds an ExceptionInfo argument to those methods that lacked it in version 6, e.g. NegateImage(image,MagickTrue,exception);</li>
 <li>All method channel analogs have been removed (e.g. BlurImageChannel()), they are no longer necessary, use pixel traits instead.</li>
 <li>Public and private API calls are now declared with the GCC visibility attribute.  The MagickCore and MagickWand dynamic libraries now only export public struct and function declarations.</li>
 <li>The InterpolatePixelMethod enum is now PixelInterpolateMethod.</li>
 <li>To account for variable pixel channels, images may now return a different signature.</li>
-</dl>
+</ul>
 <h4>Deprecated Methods</h4>
-<dl>
+<ul>
 <li>All ImageMagick version 6 MagickCore and MagickWand deprecated methods are removed and no longer available in ImageMagick version 7.</li>
 <li>All MagickCore channel method analogs are removed (e.g. NegateImageChannels()).  For version 7, use pixel traits instead.</li>
 <li>The FilterImage() method has been removed.  Use ConvolveImage() instead.</li>
-</dl>
+</ul>
 </div>
 
 
 </div>
 
 <div id="linkbar">
-    <span id="linkbar-west">&nbsp;</span>
+    <span id="linkbar-west"> </span>
 
     <span id="linkbar-center">
-      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
-      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> &bull;
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> •
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a> •
       <a href="http://jqmagick.imagemagick.org/">JqMagick</a>
     </span>
-    <span id="linkbar-east">&nbsp;</span>
+    <span id="linkbar-east"> </span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2013 ImageMagick Studio LLC</span>
+    <span id="footer-west">© 1999-2013 ImageMagick Studio LLC</span>
     <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>
+</div>
 </body>
 </html>

@@ -599,7 +599,7 @@ td.map {
 
 th {
   background-color: #d2ddf6;
-  color: black
+  color: black;
   text-align: left;
   padding: .5em;
 }
@@ -749,7 +749,6 @@ th.size-norm, tr.size-norm, td.size-norm {
 #titlebar-west {
   float: left;
 }
-*/
 
 #www-imagemagick-org {
   background: #f5f5f5;
