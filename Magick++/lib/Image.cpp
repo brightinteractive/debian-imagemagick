@@ -750,6 +750,21 @@ void Magick::Image::clampChannel ( const ChannelType channel_ )
   throwImageException();
 }
 
+void Magick::Image::clip ( void )
+{
+  modifyImage();
+  ClipImage( image() );
+  throwImageException();
+}
+
+void Magick::Image::clipPath ( const std::string pathname_,
+                               const bool inside_ )
+{
+  modifyImage();
+  ClipImagePath( image(), pathname_.c_str(), (MagickBooleanType) inside_);
+  throwImageException();
+}
+
 void Magick::Image::clut ( const Image &clutImage_ )
 {
   modifyImage();
@@ -827,6 +842,66 @@ bool Magick::Image::compare ( const Image &reference_ )
   bool status = static_cast<bool>(IsImagesEqual(image(), ref.image()));
   throwImageException();
   return status;
+}
+
+double Magick::Image::compare ( const Image &reference_,
+                                const MetricType metric_)
+{
+  double distortion = 0.0;
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  GetImageDistortion(image(), reference_.constImage(), metric_, &distortion,
+    &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+  return distortion;
+}
+
+double Magick::Image::compareChannel ( const ChannelType channel_,
+                                       const Image &reference_,
+                                       const MetricType metric_)
+{
+  double distortion = 0.0;
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  GetImageChannelDistortion(image(), reference_.constImage(), channel_,
+    metric_, &distortion, &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+  return distortion;
+}
+
+Magick::Image Magick::Image::compare ( const Image &reference_,
+                                       const MetricType metric_,
+                                       double *distortion )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage = CompareImages(image(), reference_.constImage(),
+    metric_, distortion, &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+  if (newImage == (MagickCore::Image *) NULL)
+    return Magick::Image();
+  else
+    return Magick::Image( newImage );
+}
+
+Magick::Image Magick::Image::compareChannel ( const ChannelType channel_,
+                                              const Image &reference_,
+                                              const MetricType metric_,
+                                              double *distortion )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage = CompareImageChannels(image(),
+    reference_.constImage(), channel_, metric_, distortion, &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+  if (newImage == (MagickCore::Image *) NULL)
+    return Magick::Image();
+  else
+    return Magick::Image( newImage );
 }
 
 // Composite two images
@@ -1599,10 +1674,11 @@ void Magick::Image::liquidRescale ( const Geometry &geometry_ )
                      &x, &y,
                      &width, &height );
 
-  modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  LiquidRescaleImage( image(), width, height, x, y, &exceptionInfo );
+  MagickCore::Image* newImage = LiquidRescaleImage( image(), width, height,
+    x, y, &exceptionInfo );
+  replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -1612,8 +1688,7 @@ void Magick::Image::magnify ( void )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* newImage =
-    MagnifyImage( image(), &exceptionInfo );
+  MagickCore::Image* newImage = MagnifyImage( image(), &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1986,8 +2061,7 @@ void Magick::Image::read ( const std::string &imageSpec_ )
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* image =
-    ReadImage( imageInfo(), &exceptionInfo );
+  MagickCore::Image* image = ReadImage( imageInfo(), &exceptionInfo );
 
   // Ensure that multiple image frames were not read.
   if ( image && image->next )
@@ -1997,21 +2071,17 @@ void Magick::Image::read ( const std::string &imageSpec_ )
       image->next = 0;
       next->previous = 0;
       DestroyImageList( next );
- 
     }
-  if ( image )
-    {
-      (void) DestroyExceptionInfo( &exceptionInfo );
-      throwException( image->exception );
-    }
+  replaceImage( image );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
-  replaceImage( image );
+  if ( image )
+    throwException( image->exception );
 }
 
 // Read image of specified size into current object
 void Magick::Image::read ( const Geometry &size_,
-			   const std::string &imageSpec_ )
+                           const std::string &imageSpec_ )
 {
   size( size_ );
   read( imageSpec_ );
@@ -2022,10 +2092,8 @@ void Magick::Image::read ( const Blob &blob_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* image =
-    BlobToImage( imageInfo(),
-		 static_cast<const void *>(blob_.data()),
-		 blob_.length(), &exceptionInfo );
+  MagickCore::Image* image = BlobToImage( imageInfo(),
+    static_cast<const void *>(blob_.data()), blob_.length(), &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -2035,57 +2103,43 @@ void Magick::Image::read ( const Blob &blob_ )
 
 // Read image of specified size from in-memory BLOB
 void  Magick::Image::read ( const Blob &blob_,
-			    const Geometry &size_ )
+                            const Geometry &size_ )
 {
-  // Set image size
   size( size_ );
-  // Read from Blob
   read( blob_ );
 }
 
 // Read image of specified size and depth from in-memory BLOB
 void Magick::Image::read ( const Blob &blob_,
-			   const Geometry &size_,
-			   const size_t depth_ )
+                           const Geometry &size_,
+                           const size_t depth_ )
 {
-  // Set image size
   size( size_ );
-  // Set image depth
   depth( depth_ );
-  // Read from Blob
   read( blob_ );
 }
 
 // Read image of specified size, depth, and format from in-memory BLOB
 void Magick::Image::read ( const Blob &blob_,
-			   const Geometry &size_,
-			   const size_t depth_,
-			   const std::string &magick_ )
+                           const Geometry &size_,
+                           const size_t depth_,
+                           const std::string &magick_ )
 {
-  // Set image size
   size( size_ );
-  // Set image depth
   depth( depth_ );
-  // Set image magick
   magick( magick_ );
-  // Set explicit image format
   fileName( magick_ + ':');
-  // Read from Blob
   read( blob_ );
 }
 
 // Read image of specified size, and format from in-memory BLOB
 void Magick::Image::read ( const Blob &blob_,
-			   const Geometry &size_,
-			   const std::string &magick_ )
+                           const Geometry &size_,
+                           const std::string &magick_ )
 {
-  // Set image size
   size( size_ );
-  // Set image magick
   magick( magick_ );
-  // Set explicit image format
   fileName( magick_ + ':');
-  // Read from Blob
   read( blob_ );
 }
 
@@ -2098,9 +2152,8 @@ void Magick::Image::read ( const size_t width_,
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  MagickCore::Image* image =
-    ConstituteImage( width_, height_, map_.c_str(), type_, pixels_,
-                     &exceptionInfo );
+  MagickCore::Image* image = ConstituteImage( width_, height_, map_.c_str(),
+    type_, pixels_, &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -2868,7 +2921,7 @@ Magick::Color Magick::Image::boxColor ( void ) const
   return constOptions()->boxColor( );
 }
 
-// Pixel cache threshold.  Once this threshold is exceeded, all
+// Pixel cache threshold. Once this threshold is exceeded, all
 // subsequent pixels cache operations are to/from disk.
 // This setting is shared by all Image objects.
 /* static */

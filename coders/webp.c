@@ -17,7 +17,7 @@
 %                                 March 2011                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2013 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -168,7 +168,7 @@ static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
 #define TAG_SIZE  4
 #define CHUNK_SIZE_BYTES  4
 #define CHUNK_HEADER_SIZE  8
-#define MAX_CHUNK_PAYLOAD  (~0U-CHUNK_HEADER_SIZE-1)
+#define MAX_CHUNK_PAYLOAD  (~0UL-CHUNK_HEADER_SIZE-1)
 
   ssize_t
     offset;

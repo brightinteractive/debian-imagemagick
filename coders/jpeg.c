@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2013 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -748,16 +748,13 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
 #if defined(D_PROGRESSIVE_SUPPORTED)
   if (image->compression == LosslessJPEGCompression)
     {
-      SetImageProperty(image,"jpeg:quality","100");
+      image->quality=100;
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Quality: 100 (lossless)");
     }
   else
 #endif
   {
-    char
-      quality[4];
-
     ssize_t
       j,
       qvalue,
@@ -819,10 +816,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
           if ((qvalue < hash[i]) && (sum < sums[i]))
             continue;
           if (((qvalue <= hash[i]) && (sum <= sums[i])) || (i >= 50))
-            {
-              FormatLocaleString(quality,4,"%.20g",(double) i+1);
-              SetImageProperty(image,"jpeg:quality",quality);
-            }
+            image->quality=(size_t) i+1;
           if (image->debug != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "Quality: %.20g (%s)",(double) i+1,(qvalue <= hash[i]) &&
@@ -871,10 +865,7 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
             if ((qvalue < hash[i]) && (sum < sums[i]))
               continue;
             if (((qvalue <= hash[i]) && (sum <= sums[i])) || (i >= 50))
-              {
-                FormatLocaleString(quality,4,"%.20g",(double) i+1);
-                SetImageProperty(image,"jpeg:quality",quality);
-              }
+              image->quality=(size_t) i+1;
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "Quality: %.20g (%s)",(double) i+1,(qvalue <= hash[i]) &&
@@ -1618,7 +1609,7 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Loading quantization tables \"%s\" ...",filename);
   table=(QuantizationTable *) NULL;
-  xml=FileToString(filename,~0,exception);
+  xml=FileToString(filename,~0UL,exception);
   if (xml == (char *) NULL)
     return(table);
   quantization_tables=NewXMLTree(xml,exception);
@@ -2119,13 +2110,12 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.in_color_space=JCS_GRAYSCALE;
     }
   jpeg_set_defaults(&jpeg_info);
-  if (jpeg_info.in_color_space == JCS_CMYK) 
+  if (jpeg_info.in_color_space == JCS_CMYK)
     jpeg_set_colorspace(&jpeg_info,JCS_YCCK);
   if ((jpeg_info.data_precision != 12) && (image->depth <= 8))
     jpeg_info.data_precision=8;
   else
-    if (sizeof(JSAMPLE) > 1)
-      jpeg_info.data_precision=12;
+    jpeg_info.data_precision=BITS_IN_JSAMPLE;
   jpeg_info.density_unit=(UINT8) 1;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2139,6 +2129,10 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.write_JFIF_header=MagickTrue;
       jpeg_info.X_density=(UINT16) floor(image->x_resolution+0.5);
       jpeg_info.Y_density=(UINT16) floor(image->y_resolution+0.5);
+      /*
+        Set image resolution units.
+      */
+      jpeg_info.density_unit=(UINT8) 0;
       if (image->units == PixelsPerInchResolution)
         jpeg_info.density_unit=(UINT8) 1;
       if (image->units == PixelsPerCentimeterResolution)
@@ -2213,6 +2207,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Interlace: nonprogressive");
 #endif
+  quality=92;
   option=GetImageOption(image_info,"jpeg:extent");
   if (option != (const char *) NULL)
     {
@@ -2223,6 +2218,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         *jpeg_info;
 
       jpeg_info=CloneImageInfo(image_info);
+      jpeg_info->blob=NULL;
       jpeg_image=CloneImage(image,0,0,MagickTrue,&image->exception);
       if (jpeg_image != (Image *) NULL)
         {
@@ -2244,20 +2240,19 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
           maximum=101;
           for (minimum=2; minimum < maximum; )
           {
-            jpeg_image->quality=minimum+(maximum-minimum+1)/2;
+            jpeg_info->quality=minimum+(maximum-minimum+1)/2;
             status=WriteJPEGImage(jpeg_info,jpeg_image);
             if (GetBlobSize(jpeg_image) <= extent)
-              minimum=jpeg_image->quality+1;
+              minimum=jpeg_info->quality+1;
             else
-              maximum=jpeg_image->quality-1;
+              maximum=jpeg_info->quality-1;
           }
           (void) RelinquishUniqueFileResource(jpeg_image->filename);
-          image->quality=minimum-1;
+          quality=minimum-1;
           jpeg_image=DestroyImage(jpeg_image);
         }
       jpeg_info=DestroyImageInfo(jpeg_info);
     }
-  quality=92;
   if ((image_info->compression != LosslessJPEGCompression) &&
       (image->quality <= 100))
     {

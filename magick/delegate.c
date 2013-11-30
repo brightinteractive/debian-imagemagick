@@ -16,7 +16,7 @@
 %                               October 1998                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2013 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1300,7 +1300,7 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
                     (void) CopyMagickString(path,token,MaxTextExtent);
                   else
                     (void) ConcatenateMagickString(path,token,MaxTextExtent);
-                  xml=FileToString(path,~0,exception);
+                  xml=FileToString(path,~0UL,exception);
                   if (xml != (char *) NULL)
                     {
                       status=LoadDelegateList(xml,path,depth+1,exception);

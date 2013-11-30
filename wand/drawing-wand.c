@@ -23,7 +23,7 @@
 %                                March 2002                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2013 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -4320,7 +4320,7 @@ WandExport MagickBooleanType DrawRender(DrawingWand *wand)
   status=DrawImage(wand->image,CurrentContext);
   InheritException(wand->exception,&wand->image->exception);
   CurrentContext->primitive=(char *) NULL;
-  return(status == MagickFalse ? 0 : 1);
+  return(status);
 }
 
 /*

@@ -2168,13 +2168,10 @@ namespace Magick
     // Transfer histogram array to container
     for ( size_t i=0; i < colors; i++)
       {
-        histogram_->insert(histogram_->end(),std::pair<const Color,size_t>
-                           ( Color(histogram_array[i].pixel.red,
-                                   histogram_array[i].pixel.green,
-                                   histogram_array[i].pixel.blue),
-                                   (size_t) histogram_array[i].count) );
+        histogram_->insert( histogram_->end(), std::pair<const Color,size_t>
+          ( Color(histogram_array[i].pixel), (size_t) histogram_array[i].count) );
       }
-    
+
     // Deallocate histogram array
     histogram_array=(MagickCore::ColorPacket *)
       MagickCore::RelinquishMagickMemory(histogram_array);
@@ -2538,6 +2535,24 @@ namespace Magick
 
     throwException( exceptionInfo );
     (void) MagickCore::DestroyExceptionInfo( &exceptionInfo );
+  }
+
+  // Adds the names of the profiles from the image to the container.
+  template <class Container>
+  void profileNames( Container *names_, const Image* image_ )
+  {
+    const char*
+      name;
+
+    names_->clear();
+
+    MagickCore::ResetImageProfileIterator( image_->constImage() );
+    name=MagickCore::GetNextImageProfile( image_->constImage() );
+    while (name != (const char *) NULL)
+    {
+      names_->push_back( std::string(name) );
+      name=MagickCore::GetNextImageProfile( image_->constImage() );
+    }
   }
 
   // Quantize colors in images using current quantization settings

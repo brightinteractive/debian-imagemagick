@@ -17,7 +17,7 @@
 %                                 July 1999                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2013 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -300,6 +300,7 @@ MagickExport const void *AcquirePixelCachePixels(const Image *image,
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
+  (void) exception;
   *length=0;
   if ((cache_info->type != MemoryCache) && (cache_info->type != MapCache))
     return((const void *) NULL);
@@ -2187,6 +2188,7 @@ MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
   assert(exception->signature == MagickSignature);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
+  (void) exception;
   *length=0;
   if ((cache_info->type != MemoryCache) && (cache_info->type != MapCache))
     return((void *) NULL);
@@ -3338,6 +3340,21 @@ static inline void AllocatePixelCachePixels(CacheInfo *cache_info)
     }
 }
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+#if defined(SIGBUS)
+static void CacheSignalHandler(int status)
+{
+  ThrowFatalException(CacheFatalError,"UnableToExtendPixelCache");
+}
+#endif
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   const MapMode mode)
 {
@@ -3461,6 +3478,9 @@ static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
       if (status != 0)
         return(MagickFalse);
     }
+#endif
+#if defined(SIGBUS)
+  (void) signal(SIGBUS,CacheSignalHandler);
 #endif
   return(count != (MagickOffsetType) 1 ? MagickFalse : MagickTrue);
 }
@@ -4685,6 +4705,9 @@ static inline MagickBooleanType IsAuthenticPixelCache(
 static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
   const MapMode mode)
 {
+  magick_unreferenced(nexus_info);
+  magick_unreferenced(mode);
+
   if (mode == ReadMode)
     {
       MagickCachePrefetch((unsigned char *) nexus_info->pixels,0,1);
