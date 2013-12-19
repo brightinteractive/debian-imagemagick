@@ -19,7 +19,7 @@ TESTS_CHECK_PGRMS = \
 
 tests_validate_SOURCES = tests/validate.c tests/validate.h
 tests_validate_CPPFLAGS = $(AM_CPPFLAGS)
-tests_validate_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+tests_validate_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(MATH_LIBS)
 
 TESTS_XFAIL_TESTS = 
 
