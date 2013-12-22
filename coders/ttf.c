@@ -57,7 +57,7 @@
 #include "magick/type.h"
 #include "wand/MagickWand.h"
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
-#if defined(MAGICKCORE_HAVE_FT2BUILD_H)
+#if 1
 #  include <ft2build.h>
 #endif
 #if defined(FT_FREETYPE_H)
