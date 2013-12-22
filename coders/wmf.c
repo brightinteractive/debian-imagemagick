@@ -241,7 +241,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #  define M_PI  MagickPI
 #endif
 
-#if defined(MAGICKCORE_HAVE_FT2BUILD_H)
+#if 1
 #  include <ft2build.h>
 #endif
 

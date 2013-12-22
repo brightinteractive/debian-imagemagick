@@ -77,7 +77,7 @@
 #if defined(__MINGW32__)
 #  undef interface
 #endif
-#if defined(MAGICKCORE_HAVE_FT2BUILD_H)
+#if 1
 #  include <ft2build.h>
 #endif
 #if defined(FT_FREETYPE_H)
