@@ -1,9 +1,11 @@
 imagemagick (8:6.7.7.10-7) unstable; urgency=low
 
   * Backporting SVN revision 10757 in the hope to fix the build with newer
-    freetype (closes: #732418)
+    freetype (closes: #732418), running autoconf at beginning of build to
+    regenerate configure (but not dh-autoreconf, it seems to make a mess
+    of the build system)
 
- -- Vincent Fourmond <fourmond@debian.org>  Thu, 19 Dec 2013 21:42:02 +0100
+ -- Vincent Fourmond <fourmond@debian.org>  Sun, 22 Dec 2013 21:34:19 +0100
 
 imagemagick (8:6.7.7.10-6) unstable; urgency=high
 

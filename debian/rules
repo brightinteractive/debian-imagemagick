@@ -35,6 +35,7 @@ CONVERT = /usr/bin/convert
 build: build-stamp
 build-stamp: $(QUILT_STAMPFN)
 	dh_testdir
+	autoconf
         # NOTICE: remove EPL delegate lib gvc
 	MagickDocumentPath="/usr/share/doc/imagemagick" ./configure \
 	--prefix=/usr \
