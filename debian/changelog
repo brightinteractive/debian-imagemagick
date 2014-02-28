@@ -1,3 +1,10 @@
+imagemagick (8:6.7.7.10-8) unstable; urgency=high
+
+  * Fix CVE-2014-1958 and CVE-2014-2030, two buffer overflow
+    in psd file handling (Closes: #740250).
+
+ -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Fri, 28 Feb 2014 11:23:33 +0100
+
 imagemagick (8:6.7.7.10-7) unstable; urgency=low
 
   * Backporting SVN revision 10757 in the hope to fix the build with newer
