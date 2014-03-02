@@ -1,9 +1,11 @@
 imagemagick (8:6.7.7.10-8) unstable; urgency=high
 
-  * Fix CVE-2014-1958 and CVE-2014-2030, two buffer overflow
-    in psd file handling (Closes: #740250).
+  * Fix three security bugs (Closes: #740250):
+  - Fix CVE-2014-1958 and CVE-2014-2030, two buffer overflow
+    in psd file handling.
+  - Fix CVE-2014-1947 a buffer overflow in log handling.
 
- -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Fri, 28 Feb 2014 11:23:33 +0100
+ -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Sun, 02 Mar 2014 08:47:49 +0100
 
 imagemagick (8:6.7.7.10-7) unstable; urgency=low
 
