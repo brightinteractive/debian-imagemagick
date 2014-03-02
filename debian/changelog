@@ -1,3 +1,20 @@
+imagemagick (8:6.7.7.10-5+deb7u2) wheezy-security; urgency=high
+
+  * Bump version to get on the right side of dak
+
+ -- Vincent Fourmond <fourmond@debian.org>  Sun, 01 Sep 2013 23:18:27 +0200
+
+imagemagick (8:6.7.7.10-5+deb7u1) wheezy-security; urgency=high
+
+  [ Bastien Roucariès ]
+  * Security Fix: Buffer overflow "Memory corruption while processing
+    GIF comments.", (Closes: #721273).
+  
+  [ Vincent Fourmond ]
+  * Upload to wheezy-security
+
+ -- Vincent Fourmond <fourmond@debian.org>  Sun, 01 Sep 2013 12:40:30 +0200
+
 imagemagick (8:6.7.7.10-5) unstable; urgency=high
   
   * Fix three security bug (Closes: #692367):
