@@ -1,3 +1,12 @@
+imagemagick (8:6.7.7.10-5+deb7u3) wheezy-security; urgency=high
+
+  * Fix three security bugs (Closes: #740250):
+  - Fix CVE-2014-1958 and CVE-2014-2030, two buffer overflow
+    in psd file handling.
+  - Fix CVE-2014-1947 a buffer overflow in log handling.
+
+ -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Sun, 02 Mar 2014 18:23:16 +0100
+
 imagemagick (8:6.7.7.10-5+deb7u2) wheezy-security; urgency=high
 
   * Bump version to get on the right side of dak
