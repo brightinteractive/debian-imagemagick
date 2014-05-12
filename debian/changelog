@@ -1,3 +1,10 @@
+imagemagick (8:6.7.7.10+dfsg-2) unstable; urgency=low
+
+  * Drop build dependency on graphicsmagick, but use built imagemagick
+  (closes: #747822)
+
+ -- Vincent Fourmond <fourmond@debian.org>  Mon, 12 May 2014 23:02:58 +0200
+
 imagemagick (8:6.7.7.10+dfsg-1) unstable; urgency=high
 
   * Fix three security bugs (Closes: #740250):
