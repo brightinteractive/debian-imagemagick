@@ -21,7 +21,9 @@ DESTDIR="$(CURDIR)/debian/tmp"
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 NUMJOBS := $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-MAKEFLAGS += -j$(NUMJOBS)
+# MAKEFLAGS += -j$(NUMJOBS)
+# We don't want parallel builds as this sometimes causes FTBSes
+MAKEFLAGS += -j1
 endif
 
 CONVERT = MAGICK_CONFIGURE_PATH=./config LD_LIBRARY_PATH=$(CURDIR)/magick/.libs:$(CURDIR)/wand/.libs MAGICK_CODER_MODULE_PATH=$(CURDIR)/coders/.libs  $(CURDIR)/utilities/.libs/convert
