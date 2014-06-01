@@ -16,6 +16,7 @@ export DEB_ISNATIVE ?= $(shell dpkg-parsechangelog | egrep '^Version:' | perl -n
 
 export DEB_UPSTREAM_VERSION_DROPREVISION ?= $(shell echo $(DEB_UPSTREAM_VERSION) |  sed -r "s/(^.+)\..+$$/\1/g")
 export DEB_UPSTREAM_VERSION_MAJOR ?= $(shell echo $(DEB_UPSTREAM_VERSION) | sed -r "s/(^[[:digit:]]+)\..+$$/\1/g")
+export DEB_PERL_ARCHLIB := $(shell perl -MConfig -e 'print $$Config{vendorarch}')
 
 DESTDIR="$(CURDIR)/debian/tmp"
 
@@ -175,7 +176,7 @@ install: build check
 	-find $(DESTDIR) -type d -empty | xargs -r rmdir -p
 
 	# Remove RPATH from Magick.so
-	chrpath -d $(DESTDIR)/usr/lib/perl5/auto/Image/Magick/Magick.so
+	chrpath -d $(DESTDIR)/$(DEB_PERL_ARCHLIB)/auto/Image/Magick/Magick.so
 
 	# empties dependency_libs from .la files
 	# http://lists.debian.org/debian-devel/2009/08/msg00783.html

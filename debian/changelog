@@ -1,3 +1,10 @@
+imagemagick (8:6.7.7.10+dfsg-4) unstable; urgency=medium
+
+  * Prepare perl transition (/usr/lib/perl5 move to 
+    /usr/lib/$ARCH_TRIPLET/perl5/) and avoid FTBFS (closes: #750095).
+
+ -- Bastien Roucariès <roucaries.bastien+debian@gmail.com>  Sun, 01 Jun 2014 16:27:48 +0200
+
 imagemagick (8:6.7.7.10+dfsg-3) unstable; urgency=low
 
   * Deactivate parallel build to avoid spurious FTBSes (damn #704225)
