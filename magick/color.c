@@ -916,7 +916,8 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
 */
 MagickExport MagickBooleanType ColorComponentGenesis(void)
 {
-  color_semaphore=AllocateSemaphoreInfo();
+  if (color_semaphore == (SemaphoreInfo *) NULL)
+    color_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -1112,7 +1113,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %
 %    o compliance: Adhere to this color standard: SVG, X11, or XPM.
 %
-%    tuple:  The color tuple.
+%    o tuple:  The color tuple.
 %
 */
 MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,

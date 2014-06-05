@@ -2385,7 +2385,7 @@ MagickExport MagickBooleanType InitImageMagickOpenCL(
   ImageMagickOpenCLMode mode,void *userSelectedDevice,void *selectedDevice,
   ExceptionInfo *exception)
 {
-  MagickBooleanType status = MagickTrue;
+  MagickBooleanType status = MagickFalse;
   MagickCLEnv clEnv = NULL;
   MagickBooleanType flag;
 
@@ -2670,7 +2670,7 @@ MagickPrivate cl_command_queue AcquireOpenCLCommandQueue(
   return (cl_command_queue) NULL;
 }
 
-MagickPrivate MagickBooleanType RelinquishCommandQueue(
+MagickExport MagickBooleanType RelinquishCommandQueue(
   MagickCLEnv magick_unused(clEnv),cl_command_queue magick_unused(queue))
 {
   magick_unreferenced(clEnv);

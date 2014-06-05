@@ -48,6 +48,7 @@
 #include "magick/memory_.h"
 #include "magick/pixel-private.h"
 #include "magick/resource_.h"
+#include "magick/semaphore.h"
 #include "magick/utility.h"
 
 /*
@@ -78,6 +79,9 @@ struct _MatrixInfo
 
   void
     *elements;
+
+  SemaphoreInfo
+    *semaphore;
 
   size_t
     signature;
@@ -139,8 +143,12 @@ static inline MagickOffsetType WriteMatrixElements(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PWRITE)
+  LockSemaphoreInfo(matrix_info->semaphore);
   if (lseek(matrix_info->file,offset,SEEK_SET) < 0)
-    return((MagickOffsetType) -1);
+    {
+      UnlockSemaphoreInfo(matrix_info->semaphore);
+      return((MagickOffsetType) -1);
+    }
 #endif
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
@@ -159,6 +167,9 @@ static inline MagickOffsetType WriteMatrixElements(
           break;
       }
   }
+#if !defined(MAGICKCORE_HAVE_PWRITE)
+  UnlockSemaphoreInfo(matrix_info->semaphore);
+#endif
   return(i);
 }
 
@@ -216,6 +227,7 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
   matrix_info->columns=columns;
   matrix_info->rows=rows;
   matrix_info->stride=stride;
+  matrix_info->semaphore=AllocateSemaphoreInfo();
   synchronize=GetEnvironmentValue("MAGICK_SYNCHRONIZE");
   if (synchronize != (const char *) NULL)
     {
@@ -371,6 +383,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 {
   assert(matrix_info != (MatrixInfo *) NULL);
   assert(matrix_info->signature == MagickSignature);
+  LockSemaphoreInfo(matrix_info->semaphore);
   switch (matrix_info->type)
   {
     case MemoryCache:
@@ -402,6 +415,8 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
     default:
       break;
   }
+  UnlockSemaphoreInfo(matrix_info->semaphore);
+  DestroySemaphoreInfo(&matrix_info->semaphore);
   return((MatrixInfo *) RelinquishMagickMemory(matrix_info));
 }
 
@@ -642,6 +657,24 @@ MagickExport size_t GetMatrixColumns(const MatrixInfo *matrix_info)
 %
 */
 
+static inline ssize_t EdgeX(const ssize_t x,const size_t columns)
+{
+  if (x < 0L)
+    return(0L);
+  if (x >= (ssize_t) columns)
+    return((ssize_t) (columns-1));
+  return(x);
+}
+
+static inline ssize_t EdgeY(const ssize_t y,const size_t rows)
+{
+  if (y < 0L)
+    return(0L);
+  if (y >= (ssize_t) rows)
+    return((ssize_t) (rows-1));
+  return(y);
+}
+
 static inline MagickOffsetType ReadMatrixElements(
   const MatrixInfo *restrict matrix_info,const MagickOffsetType offset,
   const MagickSizeType length,unsigned char *restrict buffer)
@@ -653,8 +686,12 @@ static inline MagickOffsetType ReadMatrixElements(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PREAD)
+  LockSemaphoreInfo(matrix_info->semaphore);
   if (lseek(matrix_info->file,offset,SEEK_SET) < 0)
-    return((MagickOffsetType) -1);
+    {
+      UnlockSemaphoreInfo(matrix_info->semaphore);
+      return((MagickOffsetType) -1);
+    }
 #endif
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
@@ -673,6 +710,9 @@ static inline MagickOffsetType ReadMatrixElements(
           break;
       }
   }
+#if !defined(MAGICKCORE_HAVE_PREAD)
+  UnlockSemaphoreInfo(matrix_info->semaphore);
+#endif
   return(i);
 }
 
@@ -685,10 +725,8 @@ MagickExport MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
 
   assert(matrix_info != (const MatrixInfo *) NULL);
   assert(matrix_info->signature == MagickSignature);
-  i=(MagickOffsetType) matrix_info->rows*x+y;
-  if ((i < 0) ||
-      ((MagickSizeType) (i*matrix_info->stride) >= matrix_info->length))
-    return(MagickFalse);
+  i=(MagickOffsetType) EdgeY(y,matrix_info->rows)*matrix_info->columns+
+    EdgeX(x,matrix_info->columns);
   if (matrix_info->type != DiskCache)
     {
       (void) memcpy(value,(unsigned char *) matrix_info->elements+i*
@@ -958,7 +996,7 @@ MagickExport MagickBooleanType SetMatrixElement(const MatrixInfo *matrix_info,
 
   assert(matrix_info != (const MatrixInfo *) NULL);
   assert(matrix_info->signature == MagickSignature);
-  i=(MagickOffsetType) matrix_info->rows*x+y;
+  i=(MagickOffsetType) y*matrix_info->columns+x;
   if ((i < 0) ||
       ((MagickSizeType) (i*matrix_info->stride) >= matrix_info->length))
     return(MagickFalse);

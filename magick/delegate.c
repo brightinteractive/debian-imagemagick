@@ -211,7 +211,7 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D e l e g a t e C o m p o n e n t T e r m i n u s                         %
++   D e l e g a t e C o m p o n e n t G e n e s i s                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -226,7 +226,8 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
 */
 MagickExport MagickBooleanType DelegateComponentGenesis(void)
 {
-  delegate_semaphore=AllocateSemaphoreInfo();
+  if (delegate_semaphore == (SemaphoreInfo *) NULL)
+    delegate_semaphore=AllocateSemaphoreInfo();
   return(MagickTrue);
 }
 
@@ -753,7 +754,7 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsDelegateCacheInstantiated() determines if the delegate cache is
-%  instantiated.  %  If not, it instantiates the cache and returns it.
+%  instantiated.  If not, it instantiates the cache and returns it.
 %
 %  The format of the IsDelegateInstantiated method is:
 %

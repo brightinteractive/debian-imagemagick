@@ -1850,15 +1850,17 @@ static void TIFFIgnoreTags(TIFF *tiff)
   Image
    *image;
 
-  TIFFFieldInfo
-    *ignore;
-
   register ssize_t
     i;
 
   size_t
     count;
 
+  TIFFFieldInfo
+    *ignore;
+
+  if (TIFFGetReadProc(tiff) != TIFFReadBlob)
+    return;
   image=(Image *)TIFFClientdata(tiff);
   tags=GetImageArtifact(image,"tiff:ignore-tags");
   if (tags == (const char *) NULL)
@@ -3052,8 +3054,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 }
           }
       }
-    if (photometric == PHOTOMETRIC_RGB)
-      (void) TransformImageColorspace(image,sRGBColorspace);
     switch (image->endian)
     {
       case LSBEndian:
