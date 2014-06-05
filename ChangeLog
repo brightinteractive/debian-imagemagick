@@ -1,3 +1,31 @@
+2014-03-11  6.8.9-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.9-0, SVN revision 15441.
+
+2013-04-03  6.8.9-0 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed bug with -strip failing to exclude PNG chunks (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25353).
+
+2014-03-30  6.8.9-0 Dirk Lemstra <dirk@snakeware...>
+  * Added new coder to take a screen shot of a monitor in Windows (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=23&t=25191).
+
+2014-03-24  6.8.9-0 Cristy  <quetzlzacatenango@image...>
+  * Don't transform sRGB compatible colorspaces to sRGB, doing so
+    inadvertingly promotes colormapped images to DirectClass.
+  * Use temporary path rather then current working directory (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25313).
+  * Support -canny edge detection option.
+  * Use MAGICKCORE_LIBOPENJP2_DELEGATE instead of MAGICKCORE_JP2_DELEGATE
+    (reference www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25376).
+
+2014-03-28  6.8.8-10 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.8-9, SVN revision 15239.
+
+2014-03-23  6.8.8-10 Cristy  <quetzlzacatenango@image...>
+  * Although they are internal methods, deprecate InitializeModuleList(),
+    LoadMimeLists(), and RelinquishCommandQueue() (reference
+   http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=25263).
+
 2014-03-20  6.8.8-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.8-9, SVN revision 15192.
 

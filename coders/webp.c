@@ -288,6 +288,11 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           break;
         }
+        case VP8_STATUS_INVALID_PARAM:
+        {
+          ThrowReaderException(CorruptImageError,"invalid parameter");
+          break;
+        }
         case VP8_STATUS_BITSTREAM_ERROR:
         {
           ThrowReaderException(CorruptImageError,"CorruptImage");
@@ -296,6 +301,16 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
         case VP8_STATUS_UNSUPPORTED_FEATURE:
         {
           ThrowReaderException(CoderError,"DataEncodingSchemeIsNotSupported");
+          break;
+        }
+        case VP8_STATUS_SUSPENDED:
+        {
+          ThrowReaderException(CorruptImageError,"decoder suspended");
+          break;
+        }
+        case VP8_STATUS_USER_ABORT:
+        {
+          ThrowReaderException(CorruptImageError,"user abort");
           break;
         }
         case VP8_STATUS_NOT_ENOUGH_DATA:
@@ -307,7 +322,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
           ThrowReaderException(CorruptImageError,"CorruptImage");
       }
     }
-  p=webp_image->u.RGBA.rgba;
+  p=(unsigned char *) webp_image->u.RGBA.rgba;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register PixelPacket
@@ -376,10 +391,10 @@ ModuleExport size_t RegisterWEBPImage(void)
 #if defined(MAGICKCORE_WEBP_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadWEBPImage;
   entry->encoder=(EncodeImageHandler *) WriteWEBPImage;
-  (void) FormatLocaleString(version,MaxTextExtent,"libwebp %d.%d.%d",
+  (void) FormatLocaleString(version,MaxTextExtent,"libwebp %d.%d.%d (%04X)",
     (WebPGetDecoderVersion() >> 16) & 0xff,
     (WebPGetDecoderVersion() >> 8) & 0xff,
-    (WebPGetDecoderVersion() >> 0) & 0xff);
+    (WebPGetDecoderVersion() >> 0) & 0xff,WEBP_ENCODER_ABI_VERSION);
 #endif
   entry->description=ConstantString("WebP Image Format");
   entry->mime_type=ConstantString("image/x-webp");
@@ -443,7 +458,25 @@ ModuleExport void UnregisterWEBPImage(void)
 %
 */
 
-static int WebPWriter(const unsigned char *stream,size_t length,
+
+#if WEBP_ENCODER_ABI_VERSION >= 0x0100
+static int WebPEncodeProgress(int percent,const WebPPicture* picture)
+{
+#define EncodeImageTag  "Encode/Image"
+
+  Image
+    *image;
+
+  MagickBooleanType
+    status;
+
+  image=(Image *) picture->custom_ptr;
+  status=SetImageProgress(image,EncodeImageTag,percent-1,100);
+  return(status == MagickFalse ? 0 : 1);
+}
+#endif
+
+static int WebPEncodeWriter(const unsigned char *stream,size_t length,
   const WebPPicture *const picture)
 {
   Image
@@ -499,8 +532,11 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     return(status);
   if ((WebPPictureInit(&picture) == 0) || (WebPConfigInit(&configure) == 0))
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
-  picture.writer=WebPWriter;
+  picture.writer=WebPEncodeWriter;
   picture.custom_ptr=(void *) image;
+#if WEBP_ENCODER_ABI_VERSION >= 0x0100
+  picture.progress_hook=WebPEncodeProgress;
+#endif
   picture.stats=(&statistics);
   picture.width=(int) image->columns;
   picture.height=(int) image->rows;
@@ -513,8 +549,8 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       configure.lossless=1;
   value=GetImageOption(image_info,"webp:lossless");
   if (value != (char *) NULL)
-    configure.lossless=ParseCommandOption(MagickBooleanOptions,MagickFalse,
-      value);
+    configure.lossless=(int) ParseCommandOption(MagickBooleanOptions,
+      MagickFalse,value);
   value=GetImageOption(image_info,"webp:method");
   if (value != (char *) NULL)
     configure.method=StringToInteger(value);
@@ -551,8 +587,8 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     configure.filter_type=StringToInteger(value);
   value=GetImageOption(image_info,"webp:auto-filter");
   if (value != (char *) NULL)
-    configure.autofilter=ParseCommandOption(MagickBooleanOptions,MagickFalse,
-      value);
+    configure.autofilter=(int) ParseCommandOption(MagickBooleanOptions,
+      MagickFalse,value);
   value=GetImageOption(image_info,"webp:alpha-compression");
   if (value != (char *) NULL)
     configure.alpha_compression=StringToInteger(value);

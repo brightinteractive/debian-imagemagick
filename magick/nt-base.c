@@ -1138,7 +1138,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
       else
         is_64_bit_version=TRUE;
 #else
-      flags=KEY_WOW64_64KEY;
+        flags=KEY_WOW64_64KEY;
 #endif
 #endif
     }
@@ -1146,6 +1146,9 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,
     {
       (void) NTLocateGhostscript(flags,&root_index,&product_family,
         &major_version,&minor_version);
+#if !defined(_WIN64)
+      is_64_bit_version=TRUE;
+#endif
     }
   if (product_family == NULL)
     return(FALSE);
@@ -1558,7 +1561,7 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
   if (length == 0)
     return((DIR *) NULL);
   if(wcsncat(file_specification,(const wchar_t*) DirectorySeparator,
-       MaxTextExtent) == (wchar_t*)NULL)
+       MaxTextExtent-wcslen(file_specification)-1) == (wchar_t*)NULL)
     return((DIR *) NULL);
   entry=(DIR *) AcquireMagickMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
@@ -1569,7 +1572,7 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
   if (entry->hSearch == INVALID_HANDLE_VALUE)
     {
       if(wcsncat(file_specification,L"*.*",
-        MaxTextExtent) == (wchar_t*)NULL)
+        MaxTextExtent-wcslen(file_specification)-1) == (wchar_t*)NULL)
         {
           entry=(DIR *) RelinquishMagickMemory(entry);
           return((DIR *) NULL);
