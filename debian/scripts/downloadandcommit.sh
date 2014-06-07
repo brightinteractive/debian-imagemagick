@@ -55,16 +55,16 @@ git checkout $GIT_SVN_REV || exit 5
 git checkout -b upstream/$DEB_UPSTREAM_VERSION
 # remove all exept git
 find ./*  -path './.git' -prune -o -exec rm -rf '{}' +
-tar --strip 1 -xaf ../imagemagick_$DEB_UPSTREAM_VERSION.orig.tar.bz2 # extract origin
+tar --strip 1 -xaf ../imagemagick_$DEB_UPSTREAM_VERSION.orig.tar.xz # extract origin
 git add . #add everything
-git commit -a -m "add upstream tar.bz2" # commit new upstream
-pristine-tar commit ../imagemagick_$DEB_UPSTREAM_VERSION.orig.tar.bz2 upstream/$DEB_UPSTREAM_VERSION # pristine tar
+git commit -a -m "add upstream tar.xz" # commit new upstream
+pristine-tar commit ../imagemagick_$DEB_UPSTREAM_VERSION.orig.tar.xz upstream/$DEB_UPSTREAM_VERSION # pristine tar
 git checkout debian/$DEB_NOEPOCH_VERSION # checkout old debian
 git checkout -b  debian/$DEB_UPSTREAM_VERSION-1 # create new version
 # emulate git their
 git merge  --no-commit upstream/$DEB_UPSTREAM_VERSION # merge without commit
 find ./* -path './debian' -prune -o -path './.git' -prune -o -exec rm -rf '{}' + # remove all except debian and git
-tar --strip 1 -xaf ../imagemagick_$DEB_UPSTREAM_VERSION.orig.tar.bz2 # use upstream
+tar --strip 1 -xaf ../imagemagick_$DEB_UPSTREAM_VERSION.orig.tar.xz # use upstream
 git add .
 git commit -a -m 'merge with upstream' # emulate git theirs but safer
 git checkout upstream/$DEB_UPSTREAM_VERSION
