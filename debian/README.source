@@ -5,7 +5,7 @@ This package use gitpkg over quilt over git svn
 * clone repo
 
 git clone git+ssh://login@git.debian.org/git/collab-maint/imagemagick.git
-git svn init -s --prefix=origin/  https://www.imagemagick.org/subversion/ImageMagick/
+git svn init -s --prefix=origin/  https://subversion.imagemagick.org/subversion/ImageMagick/
 git config gitpkg.orig-compressor bzip2
 git config gitpkg.deb-export-hook /usr/share/gitpkg/hooks/quilt-patches-deb-export-hook
 git config gitpkg.pre-export-hook /usr/share/gitpkg/hooks/pristine-tar-pre-export-hook
